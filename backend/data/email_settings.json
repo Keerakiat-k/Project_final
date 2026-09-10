@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "type": "IT",
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_user": "noreply@corphub.com",
+    "smtp_pass": "",
+    "smtp_secure": 0,
+    "from_email": "it-support@corphub.com",
+    "from_name": "CorpHub IT Service",
+    "to_emails": "",
+    "cc_emails": "",
+    "bcc_emails": "",
+    "ticket_emails": "it-support@corphub.com"
+  },
+  {
+    "id": 2,
+    "type": "HR",
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_user": "hr@corphub.com",
+    "smtp_pass": "",
+    "smtp_secure": 0,
+    "from_email": "hr@corphub.com",
+    "from_name": "CorpHub HR Department",
+    "to_emails": "",
+    "cc_emails": "",
+    "bcc_emails": "",
+    "ticket_emails": ""
+  }
+]

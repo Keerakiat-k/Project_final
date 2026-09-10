@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Admin",
+    "description": "ผู้ดูแลระบบสูงสุด"
+  },
+  {
+    "id": 2,
+    "name": "HR",
+    "description": "ฝ่ายบริหารทรัพยากรบุคคล"
+  },
+  {
+    "id": 3,
+    "name": "Employee",
+    "description": "พนักงานทั่วไป"
+  },
+  {
+    "id": 4,
+    "name": "IT Support",
+    "description": "เจ้าหน้าที่เทคโนโลยีสารสนเทศ"
+  }
+]

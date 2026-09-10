@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "prefix": "CORP",
+    "name": "CorpHub Group Co., Ltd.",
+    "status": "Active"
+  },
+  {
+    "id": 2,
+    "prefix": "TECH",
+    "name": "CorpHub Technology Co., Ltd.",
+    "status": "Active"
+  },
+  {
+    "id": 3,
+    "prefix": "INNO",
+    "name": "CorpHub Innovation Co., Ltd.",
+    "status": "Active"
+  }
+]

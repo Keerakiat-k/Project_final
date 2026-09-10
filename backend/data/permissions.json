@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "code": "view_dashboard",
+    "name": "เข้าถึงแดชบอร์ด",
+    "module": "dashboard"
+  },
+  {
+    "id": 2,
+    "code": "manage_employees",
+    "name": "จัดการพนักงาน",
+    "module": "employees"
+  },
+  {
+    "id": 3,
+    "code": "manage_assets",
+    "name": "จัดการทรัพย์สิน",
+    "module": "assets"
+  },
+  {
+    "id": 4,
+    "code": "manage_it_support",
+    "name": "จัดการแจ้งซ่อม IT",
+    "module": "it_support"
+  },
+  {
+    "id": 5,
+    "code": "manage_settings",
+    "name": "ตั้งค่าระบบ",
+    "module": "settings"
+  }
+]
