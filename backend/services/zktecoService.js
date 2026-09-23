@@ -1,8 +1,8 @@
 const ZKLib = require('node-zklib');
 const pool = require('../config/db');
 
-const DEFAULT_IP = '192.168.99.7';
-const DEFAULT_PORT = 4370;
+const DEFAULT_IP = process.env.ZKTECO_IP || '192.168.99.7';
+const DEFAULT_PORT = parseInt(process.env.ZKTECO_PORT, 10) || 4370;
 
 class ZKTecoService {
   constructor(ip = DEFAULT_IP, port = DEFAULT_PORT) {
@@ -26,7 +26,7 @@ class ZKTecoService {
       await zk.disconnect();
       return {
         online: true,
-        ip: this.ip,
+        ip: '192.168.x.x',
         port: this.port,
         userCounts: info.userCounts || 0,
         logCounts: info.logCounts || 0,
@@ -39,7 +39,7 @@ class ZKTecoService {
       }
       return {
         online: false,
-        ip: this.ip,
+        ip: '192.168.x.x',
         port: this.port,
         error: err.message,
         deviceName: 'SpeedFace-V3L (Soi-10)'

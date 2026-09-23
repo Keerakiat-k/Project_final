@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-// นำเข้า Controller
+// Controllers & Middleware
 const employeeController = require('../controllers/employeeController');
-const { verifyToken, requirePermission } = require('../middlewares/authMiddleware');
+const { verifyToken } = require('../middlewares/authMiddleware');
+const uploadProfile = require('../middleware/uploadProfile');
 
-// API สำหรับดึงข้อมูล (Read Operations)
+// Read Operations (Queries & Statistics)
 router.get('/next-code', employeeController.getNextEmployeeCode);
 router.get('/', employeeController.getAllEmployees);
 router.get('/departments', employeeController.getAllDepartments);
@@ -33,8 +34,7 @@ router.post('/clear-notifications', verifyToken, employeeController.clearNotific
 router.post('/:id/send-welcome-email', verifyToken, employeeController.sendWelcomeEmail);
 router.delete('/:id', verifyToken, employeeController.deleteEmployee);
 
-// API สำหรับอัปโหลดรูปโปรไฟล์พนักงาน
-const uploadProfile = require('../middleware/uploadProfile');
+// Profile Image Upload
 router.post('/:id/profile-image', verifyToken, uploadProfile.single('profile_image'), employeeController.uploadProfileImage);
 
 module.exports = router;

@@ -123,7 +123,7 @@ export default function LoginForm() {
         disabled={isLoading}
       />
 
-      {/* Remember Me Checkbox (นำลืมรหัสผ่านออกแล้ว) */}
+      {/* Remember Me Checkbox */}
       <div className="flex items-center justify-between pt-1">
         <label htmlFor="remember-me" className="flex items-center gap-2.5 cursor-pointer select-none group">
           <input

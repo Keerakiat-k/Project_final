@@ -4,12 +4,12 @@ import {
   Server, ShieldCheck, ShieldAlert, Wifi, Printer, Clock, Video, Box, Globe, 
   Plus, Search, Edit, Trash2, Eye, EyeOff, RotateCcw, ExternalLink, 
   Lock, X, Check, User, AlertTriangle, Calendar, FileText,
-  ArrowDown, ArrowUp, ArrowUpDown, RefreshCw
+  ArrowDown, ArrowUp, ArrowUpDown, RefreshCw, Building
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { TableSkeleton, MobileCardSkeleton } from '../components/common/Skeleton';
 
-// 🌟 รายชื่อสาขาทั้งหมด (5 สาขาหลักตามโครงสร้างองค์กร) 🌟
+// รายชื่อสาขาทั้งหมด (5 สาขาหลักตามโครงสร้างองค์กร)
 const BRANCH_LIST = ['ซอย 10', 'ซอย 74', 'ซอย 21', 'ตึก15', 'ระยอง'];
 
 const INITIAL_DEVICES = [
@@ -536,7 +536,7 @@ const INITIAL_DEVICES = [
   // BD15 (28 items)
   {
     id: 5,
-    ip_address: '192.168.99.7',
+    ip_address: '192.168.x.x',
     device_name: 'Time Access Scan BD15',
     brand_name: 'ZKTeco',
     model: 'V3L',
@@ -957,7 +957,7 @@ const INITIAL_DEVICES = [
   }
 ];
 
-// 🎨 Palette สีกำหนดตาม Design Spec Section 1.3 🎨
+// Palette สีกำหนดตาม Design Spec Section 1.3
 const CATEGORY_SPECS = {
   'Server': {
     label: 'เครื่องเซิร์ฟเวอร์ & Storage',
@@ -1013,7 +1013,7 @@ const CATEGORY_SPECS = {
 export default function NetworkAdminPage() {
   const navigate = useNavigate();
 
-  // 👤 RBAC Access Control Checklist
+  // RBAC Access Control Checklist
   const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
   const mockRole = localStorage.getItem('mockRole');
   const userRole = userInfo.role || (mockRole === '1' ? 'Admin' : mockRole === '4' ? 'IT Support' : 'Employee');
@@ -1021,7 +1021,7 @@ export default function NetworkAdminPage() {
   const isITSupport = userRole === 'IT Support' || String(userInfo.role_id) === '4' || mockRole === '4';
   const canAccess = isAdmin || isITSupport;
 
-  // 🔄 Redirect if restricted role (Employee, Manager, HR)
+  // Redirect if restricted role (Employee, Manager, HR)
   useEffect(() => {
     if (!canAccess) {
       Swal.fire({
@@ -1035,17 +1035,17 @@ export default function NetworkAdminPage() {
     }
   }, [canAccess, navigate]);
 
-  // 📦 Data State
+  // Data State
   const [devices, setDevices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 🔍 Filter & Search State
+  // Filter & Search State
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedBranch, setSelectedBranch] = useState('ทั้งหมด');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  // 🔄 Sorting State
+  // Sorting State
   const [sortField, setSortField] = useState('ip'); // 'ip' | 'name' | 'branch' | 'category'
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' (192.168.x.1 first) | 'desc'
 
@@ -1059,15 +1059,15 @@ export default function NetworkAdminPage() {
     setCurrentPage(1);
   };
 
-  // 📄 Pagination State
+  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // 🔐 Password Reveal State & Timers ({ [deviceId]: { revealed: bool, secondsLeft: 60 } })
+  // Password Reveal State & Timers ({ [deviceId]: { revealed: bool, secondsLeft: 60 } })
   const [revealedPasswords, setRevealedPasswords] = useState({});
   const timerRefs = useRef({});
 
-  // 📋 Audit Log Modal State
+  // Audit Log Modal State
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [auditLogs, setAuditLogs] = useState([]);
   const [isAuditLoading, setIsAuditLoading] = useState(false);
@@ -1091,7 +1091,7 @@ export default function NetworkAdminPage() {
     }
   };
 
-  // 📝 Modal Form State
+  // Modal Form State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
@@ -1132,7 +1132,7 @@ export default function NetworkAdminPage() {
   };
 
   // -------------------------------------------------------------
-  // 🌐 API Fetch (รองรับการแนบ branch query parameter)
+  // API Fetch (รองรับการแนบ branch query parameter)
   // -------------------------------------------------------------
   const fetchDevices = async (branch = selectedBranch) => {
     setIsLoading(true);
@@ -1183,13 +1183,13 @@ export default function NetworkAdminPage() {
   }, [isModalOpen]);
 
   // -------------------------------------------------------------
-  // 🔑 Show/Hide Password Toggle (with Audit Log Modal & 60s Auto Re-mask)
+  // Show/Hide Password Toggle (with Audit Log Modal & 60s Auto Re-mask)
   // -------------------------------------------------------------
   const handleTogglePasswordReveal = (device) => {
     const isCurrentlyRevealed = revealedPasswords[device.id]?.revealed;
 
     if (isCurrentlyRevealed) {
-      // 🔒 Manual Hide
+      // Manual Hide
       if (timerRefs.current[device.id]) {
         clearInterval(timerRefs.current[device.id]);
       }
@@ -1200,9 +1200,9 @@ export default function NetworkAdminPage() {
       return;
     }
 
-    // 🔑 Modal ยืนยันการขอเปิดดูรหัสผ่านพร้อมบันทึก Audit Log
+    // Modal ยืนยันการขอเปิดดูรหัสผ่านพร้อมบันทึก Audit Log
     Swal.fire({
-      title: '🔑 ยืนยันการขอเปิดดูรหัสผ่าน (Audit Log Notice)',
+      title: 'ยืนยันการขอเปิดดูรหัสผ่าน (Audit Log Notice)',
       html: `
         <div class="text-left text-sm text-slate-600 mb-3">
           <p class="font-semibold text-slate-800">อุปกรณ์: <span class="text-[#f89919]">${device.device_name}</span> (${device.ip_address})</p>
@@ -1282,7 +1282,7 @@ export default function NetworkAdminPage() {
   };
 
   // -------------------------------------------------------------
-  // 🔍 Filter & Search Logic
+  // Filter & Search Logic
   // -------------------------------------------------------------
   const filteredDevices = devices.filter(item => {
     // 0. Branch Filter
@@ -1307,7 +1307,7 @@ export default function NetworkAdminPage() {
     return matchesBranch && matchesCategory && matchesSearch && matchesStatus;
   });
 
-  // 🔄 Sort Devices by selected column
+  // Sort Devices by selected column
   const sortedDevices = [...filteredDevices].sort((a, b) => {
     if (sortField === 'ip') {
       const ipA = (a.ip_address || '').toString();
@@ -1353,7 +1353,7 @@ export default function NetworkAdminPage() {
   const currentDevices = sortedDevices.slice(startIndex, startIndex + itemsPerPage);
 
   // -------------------------------------------------------------
-  // 📝 Real-time IP Conflict Check
+  // Real-time IP Conflict Check
   // -------------------------------------------------------------
   const handleIPChange = (ipVal) => {
     setFormData(prev => ({ ...prev, ip_address: ipVal }));
@@ -1433,7 +1433,7 @@ export default function NetworkAdminPage() {
     setIsModalOpen(true);
   };
 
-  // 🔑 ปลดล็อกดูรหัสผ่านเดิมในหน้า Modal แก้ไข (ต้องผ่าน Audit Log เช่นกัน)
+  // ปลดล็อกดูรหัสผ่านเดิมในหน้า Modal แก้ไข (ต้องผ่าน Audit Log เช่นกัน)
   const handleModalRevealPassword = async (field = 'login_password') => {
     // ถ้าผู้ใช้พิมพ์รหัสผ่านใหม่อยู่ในฟอร์มแล้ว ให้สลับดู/ซ่อนได้ทันที
     if (formData[field] && formData[field].trim() !== '') {
@@ -1447,7 +1447,7 @@ export default function NetworkAdminPage() {
       const currentDevice = devices.find(d => d.id === editingId) || { id: editingId, device_name: formData.device_name, ip_address: formData.ip_address };
 
       Swal.fire({
-        title: '🔑 ยืนยันการขอเปิดดูรหัสผ่าน (Audit Log Notice)',
+        title: 'ยืนยันการขอเปิดดูรหัสผ่าน (Audit Log Notice)',
         html: `
           <div class="text-left text-sm text-slate-600 mb-3">
             <p class="font-semibold text-slate-800">อุปกรณ์: <span class="text-[#f89919]">${currentDevice.device_name}</span> (${currentDevice.ip_address})</p>
@@ -1646,7 +1646,7 @@ export default function NetworkAdminPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-[#1e2430] p-4 sm:p-6 lg:p-8 animate-in fade-in duration-300">
       
       {/* ------------------------------------------------------------- */}
-      {/* 📌 SECTION 1: HEADER & METRIC SUMMARY CARDS                   */}
+      {/* SECTION 1: HEADER & METRIC SUMMARY CARDS                   */}
       {/* ------------------------------------------------------------- */}
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -1660,9 +1660,9 @@ export default function NetworkAdminPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* 🏢 Header Branch Selector Dropdown */}
+          {/* Header Branch Selector Dropdown */}
           <div className="flex items-center gap-2 bg-white dark:bg-[#262f3f] border border-slate-200 dark:border-[#364356] rounded-xl px-3.5 py-2 shadow-sm focus-within:ring-2 focus-within:ring-[#f89919]">
-            <span className="text-[#f89919] font-bold text-sm">🏢</span>
+            <Building className="w-4 h-4 text-[#f89919]" />
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">สาขา:</span>
             <select
               value={selectedBranch}
@@ -1701,7 +1701,7 @@ export default function NetworkAdminPage() {
         {/* Card 1: Total Devices */}
         <div className="bg-white dark:bg-[#262f3f] rounded-2xl p-4 border border-slate-200 dark:border-[#364356] shadow-sm flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">🌐 อุปกรณ์ทั้งหมด</div>
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">อุปกรณ์ทั้งหมด</div>
             <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">{totalCount} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">รายการ</span></div>
             <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">Active: {activeCount} รายการ</div>
           </div>
@@ -1713,7 +1713,7 @@ export default function NetworkAdminPage() {
         {/* Card 2: Server */}
         <div className="bg-white dark:bg-[#262f3f] rounded-2xl p-4 border border-slate-200 dark:border-[#364356] shadow-sm flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">🖥️ เครื่องเซิร์ฟเวอร์</div>
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">เครื่องเซิร์ฟเวอร์</div>
             <div className="text-2xl font-extrabold text-indigo-700 dark:text-indigo-400 mt-1">{serverCount} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">เครื่อง</span></div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">DC, DNS, NAS QNAP</div>
           </div>
@@ -1725,7 +1725,7 @@ export default function NetworkAdminPage() {
         {/* Card 3: Access Point */}
         <div className="bg-white dark:bg-[#262f3f] rounded-2xl p-4 border border-slate-200 dark:border-[#364356] shadow-sm flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">📶 Access Point</div>
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Access Point</div>
             <div className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 mt-1">{apCount} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">จุดบริการ</span></div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">TP-Link, Cisco, D-Link</div>
           </div>
@@ -1737,7 +1737,7 @@ export default function NetworkAdminPage() {
         {/* Card 4: Printer */}
         <div className="bg-white dark:bg-[#262f3f] rounded-2xl p-4 border border-slate-200 dark:border-[#364356] shadow-sm flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">🖨️ เครื่องพิมพ์เอกสาร</div>
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">เครื่องพิมพ์เอกสาร</div>
             <div className="text-2xl font-extrabold text-amber-700 dark:text-amber-400 mt-1">{printerCount} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">เครื่อง</span></div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">HP, Brother, Canon</div>
           </div>
@@ -1749,33 +1749,25 @@ export default function NetworkAdminPage() {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 🏷️ SECTION 2: CATEGORY FILTER PILLS & SEARCH BAR              */}
+      {/* SECTION 2: CATEGORY FILTER PILLS & SEARCH BAR              */}
       {/* ------------------------------------------------------------- */}
       <div className="bg-white dark:bg-[#262f3f] rounded-2xl p-4 border border-slate-200 dark:border-[#364356] shadow-sm mb-6 space-y-4">
         
-        {/* Filter Pills 7 หมวดหมู่ (Spec Section 3.1) */}
-        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
-          
-          {/* Pill "ทั้งหมด" (All) */}
+        {/* Top: Category Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
           <button
             onClick={() => setSelectedCategory('All')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs border transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
               selectedCategory === 'All'
-                ? 'bg-[#f89919] text-white shadow-sm font-semibold border-[#f89919]'
-                : 'bg-white dark:bg-[#1c232f] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#303b4e] border-slate-200 dark:border-[#364356]'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-sm'
+                : 'bg-white dark:bg-[#1c232f] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#364356] hover:bg-slate-50 dark:hover:bg-[#303b4e]'
             }`}
           >
-            <span>ทั้งหมด</span>
-            <span className={`px-1.5 py-0.2 text-[10px] rounded-full font-bold ${
-              selectedCategory === 'All' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-[#262f3f] text-slate-600 dark:text-slate-300'
-            }`}>
-              {getCategoryCount('All')}
-            </span>
+            <span>ทั้งหมด ({getCategoryCount('All')})</span>
           </button>
 
-          {/* 7 Category Pills */}
-          {Object.entries(CATEGORY_SPECS).map(([catKey, spec]) => {
-            const IconComp = spec.icon;
+          {Object.keys(CATEGORY_SPECS).map((catKey) => {
+            const spec = CATEGORY_SPECS[catKey];
             const isSelected = selectedCategory === catKey;
             const count = getCategoryCount(catKey);
 
@@ -1783,60 +1775,59 @@ export default function NetworkAdminPage() {
               <button
                 key={catKey}
                 onClick={() => setSelectedCategory(catKey)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs border transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all border ${
                   isSelected ? spec.pillActive : spec.pillInactive
                 }`}
               >
-                <IconComp className="w-3.5 h-3.5" />
+                <spec.icon className="w-3.5 h-3.5" />
                 <span>{catKey}</span>
-                <span className={`px-1.5 py-0.2 text-[10px] rounded-full font-bold ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-[#1c232f] text-slate-600 dark:text-slate-300'
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  isSelected ? 'bg-white/20 text-white font-bold' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                 }`}>
                   {count}
                 </span>
               </button>
             );
           })}
-
         </div>
 
-            {/* Global Search Input & Secondary Filters */}
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              
-              {/* Search Input */}
-              <div className="relative flex-1 w-full">
-                <Search className="text-slate-400 w-4 h-4 absolute left-3 top-3" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="ค้นหาตาม IP Address (เช่น 192.168.99.1), ชื่ออุปกรณ์, ยี่ห้อ, รุ่น..."
-                  className="w-full pl-9 pr-9 py-2 bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#f89919] focus:bg-white dark:focus:bg-[#1c232f] transition-all"
-                />
-                {searchTerm && (
-                  <button
-                    onClick={() => setSearchTerm('')}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded-full"
-                    title="ล้างคำค้นหา"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+        {/* Bottom: Search Bar & Branch / Status Dropdowns */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+          
+          {/* Search Box */}
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="ค้นหา IP, ชื่ออุปกรณ์, ยี่ห้อ, รุ่น, สาขา, หมายเหตุ..."
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#f89919] focus:bg-white dark:focus:bg-[#1c232f] transition-all"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
 
-              {/* Status Dropdown */}
-              <div className="w-full sm:w-48">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full py-2 px-3 bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] rounded-xl text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#f89919] focus:bg-white dark:focus:bg-[#1c232f] transition-all"
-                >
-                  <option value="" className="dark:bg-[#1c232f]">สถานะทั้งหมด</option>
-                  <option value="active" className="dark:bg-[#1c232f]">🟢 Active (เปิดใช้งาน)</option>
-                  <option value="maintenance" className="dark:bg-[#1c232f]">🟡 Maintenance (ซ่อมบำรุง)</option>
-                  <option value="inactive" className="dark:bg-[#1c232f]">🔴 Inactive (ยกเลิก)</option>
-                </select>
-              </div>
+          <div className="flex items-center gap-2">
+            {/* Status Dropdown */}
+            <div className="w-36">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full py-2 px-3 bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] rounded-xl text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#f89919] focus:bg-white dark:focus:bg-[#1c232f] transition-all"
+              >
+                <option value="" className="dark:bg-[#1c232f]">สถานะทั้งหมด</option>
+                <option value="active" className="dark:bg-[#1c232f]">Active (เปิดใช้งาน)</option>
+                <option value="maintenance" className="dark:bg-[#1c232f]">Maintenance (ซ่อมบำรุง)</option>
+                <option value="inactive" className="dark:bg-[#1c232f]">Inactive (ยกเลิก)</option>
+              </select>
+            </div>
 
               {/* Reset Filters Button */}
               {(selectedCategory !== 'All' || selectedBranch !== 'ทั้งหมด' || searchTerm || statusFilter) && (
@@ -1852,13 +1843,14 @@ export default function NetworkAdminPage() {
             </div>
 
           </div>
+        </div>
 
-          {/* ------------------------------------------------------------- */}
-          {/* 📊 SECTION 3: NETWORK DEVICE DATA TABLE & MOBILE CARDS        */}
-          {/* ------------------------------------------------------------- */}
+        {/* ------------------------------------------------------------- */}
+        {/* SECTION 3: NETWORK DEVICE DATA TABLE & MOBILE CARDS        */}
+        {/* ------------------------------------------------------------- */}
           <div className="bg-white dark:bg-[#262f3f] rounded-2xl border border-slate-200 dark:border-[#364356] shadow-sm overflow-hidden mb-6">
             
-            {/* 💻 Desktop Table View (md:block) */}
+            {/* Desktop Table View (md:block) */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse" role="table">
                 <thead>
@@ -1961,7 +1953,7 @@ export default function NetworkAdminPage() {
                             )}
                             {item.remark && (
                               <div className="text-[11px] text-slate-400 mt-0.5 truncate max-w-[200px]" title={item.remark}>
-                                💬 {item.remark}
+                                {item.remark}
                               </div>
                             )}
                           </td>
@@ -1977,7 +1969,7 @@ export default function NetworkAdminPage() {
                           {/* 3.5. Branch Badge */}
                           <td className="py-3.5 px-4 align-top whitespace-nowrap">
                             <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
-                              🏢 {item.branch_name || 'ASCG HQ'}
+                              {item.branch_name || 'ASCG HQ'}
                             </span>
                           </td>
 
@@ -2101,7 +2093,7 @@ export default function NetworkAdminPage() {
               </table>
             </div>
 
-            {/* 📱 Mobile Card View (md:hidden) */}
+            {/* Mobile Card View (md:hidden) */}
             <div className="block md:hidden divide-y divide-slate-100">
               {isLoading ? (
                 <MobileCardSkeleton count={4} />
@@ -2122,7 +2114,7 @@ export default function NetworkAdminPage() {
                             {item.ip_address}
                           </span>
                           <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-                            🏢 {item.branch_name || 'ASCG HQ'}
+                            {item.branch_name || 'ASCG HQ'}
                           </span>
                         </div>
                         <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-lg border ${catSpec.badge}`}>
@@ -2140,7 +2132,7 @@ export default function NetworkAdminPage() {
                           </div>
                         )}
                         {item.remark && (
-                          <div className="text-[11px] text-slate-400 mt-0.5">💬 {item.remark}</div>
+                          <div className="text-[11px] text-slate-400 mt-0.5">{item.remark}</div>
                         )}
                       </div>
 
@@ -2221,7 +2213,7 @@ export default function NetworkAdminPage() {
             </div>
 
         {/* ------------------------------------------------------------- */}
-        {/* 📄 SECTION 4: PAGINATION & FOOTER                              */}
+        {/* SECTION 4: PAGINATION & FOOTER                              */}
         {/* ------------------------------------------------------------- */}
         <div className="px-4 py-3 bg-slate-50 dark:bg-[#1c232f] border-t border-slate-200 dark:border-[#364356] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-400">
           <div>
@@ -2265,7 +2257,7 @@ export default function NetworkAdminPage() {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 📝 MODAL FORM: ADD / EDIT DEVICE (2-Column Responsive Layout)  */}
+      {/* MODAL FORM: ADD / EDIT DEVICE (2-Column Responsive Layout)  */}
       {/* ------------------------------------------------------------- */}
       {isModalOpen && (
         <div 
@@ -2282,7 +2274,7 @@ export default function NetworkAdminPage() {
               <div className="flex items-center gap-2">
                 <Server className="w-5 h-5 text-[#f89919]" />
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                  {editingId ? '✏️ แก้ไขข้อมูลอุปกรณ์เครือข่าย' : '🖥️ เพิ่มอุปกรณ์เครือข่ายใหม่'}
+                  {editingId ? 'แก้ไขข้อมูลอุปกรณ์เครือข่าย' : 'เพิ่มอุปกรณ์เครือข่ายใหม่'}
                 </h2>
               </div>
               <button
@@ -2359,7 +2351,7 @@ export default function NetworkAdminPage() {
                     <div className="mt-2 p-2.5 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-800 flex items-start gap-2 animate-in fade-in">
                       <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <span className="font-bold">⚠️ คำเตือน IP ซ้ำ:</span> หมายเลข <span className="font-mono font-bold">{formData.ip_address}</span> ถูกใช้งานแล้วโดยอุปกรณ์ <span className="font-semibold">{ipConflict.device_name}</span> ({ipConflict.category})
+                        <span className="font-bold">คำเตือน IP ซ้ำ:</span> หมายเลข <span className="font-mono font-bold">{formData.ip_address}</span> ถูกใช้งานแล้วโดยอุปกรณ์ <span className="font-semibold">{ipConflict.device_name}</span> ({ipConflict.category})
                       </div>
                     </div>
                   ) : formData.ip_address.trim() ? (
@@ -2544,7 +2536,7 @@ export default function NetworkAdminPage() {
                       onChange={handleFormChange}
                       className="accent-[#f89919]"
                     />
-                    <span>🟢 Active (เปิดใช้งานปกติ)</span>
+                    <span>Active (เปิดใช้งานปกติ)</span>
                   </label>
                   <label className="inline-flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800">
                     <input
@@ -2555,7 +2547,7 @@ export default function NetworkAdminPage() {
                       onChange={handleFormChange}
                       className="accent-amber-500"
                     />
-                    <span>🟡 Maintenance (ซ่อมบำรุง)</span>
+                    <span>Maintenance (ซ่อมบำรุง)</span>
                   </label>
                   <label className="inline-flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800">
                     <input
@@ -2566,7 +2558,7 @@ export default function NetworkAdminPage() {
                       onChange={handleFormChange}
                       className="accent-slate-500"
                     />
-                    <span>🔴 Inactive (ยกเลิก)</span>
+                    <span>Inactive (ยกเลิก)</span>
                   </label>
                 </div>
               </div>
@@ -2599,7 +2591,7 @@ export default function NetworkAdminPage() {
                   type="submit"
                   className="px-5 py-2 bg-[#f89919] hover:bg-[#d97c08] text-white font-semibold text-sm rounded-xl shadow-md shadow-[#f89919]/20 transition-all cursor-pointer"
                 >
-                  💾 บันทึกข้อมูล
+                  บันทึกข้อมูล
                 </button>
               </div>
 
@@ -2610,7 +2602,7 @@ export default function NetworkAdminPage() {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 📋 MODAL: AUDIT LOG HISTORY (ประวัติการเปิดดูรหัสผ่าน)       */}
+      {/* MODAL: AUDIT LOG HISTORY (ประวัติการเปิดดูรหัสผ่าน)       */}
       {/* ------------------------------------------------------------- */}
       {isAuditModalOpen && (
         <div 

@@ -1,13 +1,10 @@
-const mysql = require('mysql2/promise');
+const path = require('path');
+const fs = require('fs');
+const db = require('../config/db');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
+const pool = db;
 
 // Helper: Get settings from DB by type
 const getSmtpSettings = async (type = 'IT') => {
@@ -88,7 +85,7 @@ exports.testEmail = async (req, res) => {
     const info = await transporter.sendMail({
       from: `"${settings.from_name}" <${settings.from_email}>`,
       to: settings.smtp_user, // send to self as a test
-      subject: "Test Email from ASCG System ✔",
+      subject: "Test Email from ASCG System",
       text: "This is a test email to verify SMTP configuration.",
       html: "<b>This is a test email to verify SMTP configuration.</b>",
     });
@@ -147,7 +144,7 @@ exports.sendAnnouncement = async (req, res) => {
     const defaultHtmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
         <div style="background-color: #4f46e5; padding: 20px; text-align: center;">
-          <h2 style="color: white; margin: 0;">📢 ประกาศองค์กร (ASCG)</h2>
+          <h2 style="color: white; margin: 0;">ประกาศองค์กร (ASCG)</h2>
         </div>
         <div style="padding: 20px;">
           <h3 style="color: #1e293b; margin-top: 0;">{{title}}</h3>
@@ -170,8 +167,6 @@ exports.sendAnnouncement = async (req, res) => {
     let imageHtml = '';
     
     if (announcement.cover_image) {
-        const path = require('path');
-        const fs = require('fs');
         const imagePath = path.join(__dirname, '../uploads/announcements', announcement.cover_image);
         
         if (fs.existsSync(imagePath)) {

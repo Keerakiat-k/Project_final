@@ -155,7 +155,7 @@ CREATE TABLE `attendance_logs` (
   `punch_type` varchar(30) DEFAULT 'CheckIn',
   `verify_type` varchar(30) DEFAULT 'Fingerprint/Face',
   `device_name` varchar(100) DEFAULT 'SpeedFace-V3L Soi-10',
-  `device_ip` varchar(45) DEFAULT '192.168.99.7',
+  `device_ip` varchar(45) DEFAULT '192.168.x.x',
   `raw_data` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
@@ -220,24 +220,6 @@ CREATE TABLE `departments` (
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
--- Table structure for table device_user_mappings
--- --------------------------------------------------------
-DROP TABLE IF EXISTS device_user_mappings;
-CREATE TABLE `device_user_mappings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `device_user_id` varchar(50) NOT NULL,
-  `device_name_display` varchar(150) DEFAULT NULL,
-  `employee_id` int(11) DEFAULT NULL,
-  `employee_code` varchar(50) DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `device_user_id` (`device_user_id`),
-  KEY `idx_dev_user` (`device_user_id`),
-  KEY `idx_emp_id` (`employee_id`),
-  KEY `idx_emp_code` (`employee_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 -- Table structure for table email_settings
@@ -403,68 +385,6 @@ CREATE TABLE `it_supports` (
   `assigned_to` varchar(100) DEFAULT NULL,
   `admin_note` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
--- Table structure for table leave_balances
--- --------------------------------------------------------
-DROP TABLE IF EXISTS leave_balances;
-CREATE TABLE `leave_balances` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `employee_id` int(11) NOT NULL,
-  `leave_type_id` int(11) NOT NULL,
-  `year` int(11) NOT NULL,
-  `total_days` float NOT NULL DEFAULT 0,
-  `used_days` float NOT NULL DEFAULT 0,
-  `pending_days` float NOT NULL DEFAULT 0,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `emp_leave_year` (`employee_id`,`leave_type_id`,`year`),
-  KEY `leave_type_id` (`leave_type_id`),
-  CONSTRAINT `leave_balances_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `leave_balances_ibfk_2` FOREIGN KEY (`leave_type_id`) REFERENCES `leave_types` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
--- Table structure for table leave_requests
--- --------------------------------------------------------
-DROP TABLE IF EXISTS leave_requests;
-CREATE TABLE `leave_requests` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `employee_id` int(11) NOT NULL,
-  `leave_type_id` int(11) NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  `duration_type` enum('Full Day','Morning','Afternoon') DEFAULT 'Full Day',
-  `total_days` float NOT NULL,
-  `reason` text DEFAULT NULL,
-  `attachment` varchar(255) DEFAULT NULL,
-  `status` enum('Pending Manager','Pending HR','Approved','Rejected','Cancelled') DEFAULT 'Pending Manager',
-  `manager_id` int(11) DEFAULT NULL,
-  `hr_id` int(11) DEFAULT NULL,
-  `reject_reason` text DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `employee_id` (`employee_id`),
-  KEY `leave_type_id` (`leave_type_id`),
-  CONSTRAINT `leave_requests_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `leave_requests_ibfk_2` FOREIGN KEY (`leave_type_id`) REFERENCES `leave_types` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
--- Table structure for table leave_types
--- --------------------------------------------------------
-DROP TABLE IF EXISTS leave_types;
-CREATE TABLE `leave_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `default_days` int(11) NOT NULL DEFAULT 0,
-  `is_active` tinyint(1) DEFAULT 1,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

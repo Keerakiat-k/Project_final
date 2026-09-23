@@ -199,9 +199,9 @@ export default function ITSupportPage() {
                                 required name="urgency" value={formData.urgency} onChange={handleChange}
                                 className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-[#364356] bg-white dark:bg-[#1c232f] text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                             >
-                                <option value="ต่ำ (ไม่กระทบการทำงาน)" className="dark:bg-[#1c232f]">🟢 ต่ำ (ไม่กระทบการทำงานหลัก)</option>
-                                <option value="ปานกลาง" className="dark:bg-[#1c232f]">🟡 ปานกลาง (พอทำงานอื่นทดแทนได้)</option>
-                                <option value="สูง (ทำงานต่อไม่ได้)" className="dark:bg-[#1c232f]">🔴 สูง (ทำงานต่อไม่ได้เลย)</option>
+                                <option value="ต่ำ (ไม่กระทบการทำงาน)" className="dark:bg-[#1c232f]">ต่ำ (ไม่กระทบการทำงานหลัก)</option>
+                                <option value="ปานกลาง" className="dark:bg-[#1c232f]">ปานกลาง (พอทำงานอื่นทดแทนได้)</option>
+                                <option value="สูง (ทำงานต่อไม่ได้)" className="dark:bg-[#1c232f]">สูง (ทำงานต่อไม่ได้เลย)</option>
                             </select>
                         </div>
                     </div>

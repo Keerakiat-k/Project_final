@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   Settings, Building2, Users, Shield, Briefcase, 
-  Workflow, ArrowLeft, Plus, Edit2, Trash2, X, Mail, UserCog
+  Workflow, ArrowLeft, Plus, Edit2, Trash2, X, Mail, UserCog, Wrench, Megaphone
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import InputField from '../components/ui/InputField';
@@ -713,7 +713,8 @@ export default function SystemSettingsPage() {
                       {activeEmailTab === 'IT' && (
                         <div className="md:col-span-2 p-5 bg-amber-50/70 dark:bg-[#202938] rounded-xl border border-amber-200 dark:border-amber-900/50">
                           <h3 className="text-sm font-bold text-amber-900 dark:text-amber-400 flex items-center gap-2 mb-1">
-                            <span>🛠️</span> อีเมลรับแจ้งเตือนปัญหา IT (IT Ticket Alert Recipients)
+                            <Wrench size={16} />
+                            <span>อีเมลรับแจ้งเตือนปัญหา IT (IT Ticket Alert Recipients)</span>
                           </h3>
                           <p className="text-xs text-amber-700/80 dark:text-amber-300/80 mb-4">
                             ระบบจะส่งอีเมลแจ้งเตือนหาทีมงานตามรายชื่อนี้ทันทีที่มีพนักงานแจ้งปัญหา IT เข้ามา (แยกอิสระ ไม่เกี่ยวกับประกาศ)
@@ -732,7 +733,8 @@ export default function SystemSettingsPage() {
                       {/* Section: Announcements Default Recipients */}
                       <div className="md:col-span-2 p-5 bg-slate-50 dark:bg-[#1c232f] rounded-xl border border-slate-200 dark:border-[#364356]">
                         <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mb-1">
-                          <span>📢</span> อีเมลรับประกาศองค์กรเริ่มต้น (Default Announcement Recipients)
+                          <Megaphone size={16} />
+                          <span>อีเมลรับประกาศองค์กรเริ่มต้น (Default Announcement Recipients)</span>
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
                           ใช้สำหรับส่งสำเนาประกาศข่าวสารองค์กร (Announcement) เมื่อกดส่งประกาศจากระบบ

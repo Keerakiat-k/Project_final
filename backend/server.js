@@ -2,77 +2,70 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-// นำเข้า Routes (เช็คพาธให้ตรงกับโฟลเดอร์จริง)
+// Routes & Controllers
 const employeeRoutes = require('./routes/employeeRoutes');
 const authRoutes = require('./routes/authRoutes');
 const employeeController = require('./controllers/employeeController');
 const itSupportController = require('./controllers/itSupportController');
 const path = require('path');
-const announcementController = require('./controllers/announcementController');
 const settingsController = require('./controllers/settingsController');
-const upload = require('./middleware/upload');
-const { verifyToken, requirePermission } = require('./middlewares/authMiddleware');
+const { verifyToken } = require('./middlewares/authMiddleware');
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
-// สำคัญมาก: ให้ Express อ่าน JSON ได้
+// Middleware: Parse JSON request body
 app.use(express.json()); 
 
-// เสิร์ฟไฟล์ Static ให้ Frontend เข้าถึงรูปภาพได้
+// Static Files: Serve uploaded assets
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health Check
+// Health Check API
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Backend is running' });
 });
 
-// ใช้งาน Routes
+// Authentication & Employee Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 
 app.get('/api/companies', employeeController.getAllCompanies);
-
-// 🌟 Route สำหรับเปลี่ยนสถานะพนักงาน
 app.put('/api/employees/:id/status', employeeController.updateEmployeeStatus);
 
 // ==========================================
-// Routes สำหรับระบบแจ้งปัญหา IT (IT Helpdesk)
+// IT Helpdesk Routes
 // ==========================================
-app.post('/api/it-support', itSupportController.createTicket);                      // พนักงาน/บุคคลทั่วไปส่งแจ้งปัญหา (Public)
-app.get('/api/it-support', verifyToken, itSupportController.getAllTickets);          // Admin ดึงรายการทั้งหมด (Protected)
-app.put('/api/it-support/:id', verifyToken, itSupportController.updateTicket);       // Admin อัปเดตงาน (Protected)
-app.delete('/api/it-support/:id', verifyToken, itSupportController.deleteTicket);    // Admin ลบรายการแจ้งซ่อม (Protected)
+app.post('/api/it-support', itSupportController.createTicket);                      // Public: Submit ticket
+app.get('/api/it-support', verifyToken, itSupportController.getAllTickets);          // Protected: View all tickets
+app.put('/api/it-support/:id', verifyToken, itSupportController.updateTicket);       // Protected: Update ticket
+app.delete('/api/it-support/:id', verifyToken, itSupportController.deleteTicket);    // Protected: Delete ticket
 
 
 
-// Route สำหรับดึงและเพิ่มประกาศ
+// Announcements Management
 const announcementRoutes = require('./routes/announcements');
 app.use('/api/announcements', announcementRoutes);
 
-// Route สำหรับจัดการ Hosting
+// Hosting Management
 const hostingRoutes = require('./routes/hostings');
 app.use('/api/hostings', verifyToken, hostingRoutes);
 
-// Route สำหรับระบบทะเบียนทรัพย์สิน (Asset Management)
+// Asset Management
 const assetRoutes = require('./routes/assets');
 app.use('/api/assets', verifyToken, assetRoutes);
 
-// Route สำหรับระบบการลา (Leave Management)
-const leaveRoutes = require('./routes/leaveRoutes');
-app.use('/api/leave', verifyToken, leaveRoutes);
 
-// Route สำหรับระบบจัดการเครือข่ายและเซิร์ฟเวอร์ (Network & Infrastructure Management)
+// Network & Infrastructure Management
 const networkRoutes = require('./routes/networkRoutes');
 app.use('/api/network-devices', networkRoutes);
 
-// Route สำหรับระบบบันทึกเวลาเข้า-ออกงาน (Time Attendance & ZKTeco SpeedFace-V3L)
+// Time Attendance (ZKTeco SpeedFace-V3L)
 const timeAttendanceRoutes = require('./routes/timeAttendanceRoutes');
 app.use('/api/time-attendance', timeAttendanceRoutes);
 
 // ==========================================
-// Routes สำหรับ System Settings
+// System Settings Routes
 // ==========================================
 app.use('/api/settings', verifyToken);
 app.get('/api/settings/companies', settingsController.getCompanies);
@@ -98,28 +91,27 @@ app.put('/api/settings/positions/:id', settingsController.updatePosition);
 app.delete('/api/settings/positions/:id', settingsController.deletePosition);
 
 // ==========================================
-// Routes สำหรับ Categories & System Accounts
+// Categories & System Accounts
 // ==========================================
 const categoriesRoutes = require('./routes/categoriesRoutes');
 app.use('/api', categoriesRoutes);
-app.use('/api/settings', categoriesRoutes); // สำหรับ Client ที่เรียก /api/settings/it-categories และ /api/settings/announcement-types
+app.use('/api/settings', categoriesRoutes);
 
-// Alias สำหรับ /api/settings/system-accounts ให้เรียก employeeController.getSystemAccounts
+// System Accounts Alias
 app.get('/api/settings/system-accounts', employeeController.getSystemAccounts);
 
 // ==========================================
-// Routes สำหรับ Email Settings และ Announcements
+// Email Settings & BCC Groups
 // ==========================================
 const emailSettingsRoutes = require('./routes/emailSettingsRoutes');
-app.use('/api', verifyToken, emailSettingsRoutes);
+app.use('/api', emailSettingsRoutes);
 
 const bccGroupsRoutes = require('./routes/bccGroupsRoutes');
 app.use('/api/bcc-groups', verifyToken, bccGroupsRoutes);
 
-// Routes สำหรับ IT System Health Check
+// IT System Health Check
 const itHealthRoutes = require('./routes/itHealthRoutes');
 app.use('/api', itHealthRoutes);
-
 
 // -------------------------------------------------------------
 // Serve React Frontend Static Files & SPA Routing
@@ -127,7 +119,7 @@ app.use('/api', itHealthRoutes);
 const distPath = path.join(__dirname, '../frontend/dist');
 app.use(express.static(distPath));
 
-// Global Error Handler (ดัก Error จาก Multer หรืออื่นๆ ให้ตอบกลับเป็น JSON)
+// Global Error Handler
 app.use((err, req, res, next) => {
     console.error('Global Error Handler:', err);
     res.status(500).json({
@@ -136,7 +128,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Catch-all handler to serve React Frontend
+// SPA Fallback Handler
 app.use((req, res) => {
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ status: 'error', message: 'API route not found' });
@@ -145,5 +137,5 @@ app.use((req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 CorpHub Server is running on http://0.0.0.0:${port} (Standalone Mode)`);
+    console.log(`CorpHub Server is running on http://0.0.0.0:${port} (Standalone Mode)`);
 });

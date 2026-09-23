@@ -4,7 +4,7 @@ import {
   Plus, Edit, UserMinus, Search, ArrowLeft, Printer, Users, Mail, Trash2,
   CalendarRange, X, User, Copy, Check, ExternalLink, Laptop, ShieldCheck, Tag,
   ShieldAlert, AlertTriangle, CheckSquare, Square, FileText, CheckCircle2, RotateCcw, Lock,
-  ArrowDown, ArrowUp, ArrowUpDown
+  ArrowDown, ArrowUp, ArrowUpDown, Package
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useReactToPrint } from 'react-to-print';
@@ -121,7 +121,7 @@ export default function EmployeeListPage() {
   }, []);
 
   // ==========================================
-  // 🚪 IT Offboarding Checklist Setup
+  // IT Offboarding Checklist Setup
   // ==========================================
   const [showOffboardModal, setShowOffboardModal] = useState(false);
   const [offboardEmp, setOffboardEmp] = useState(null);
@@ -249,7 +249,7 @@ export default function EmployeeListPage() {
         <div class="text-xs text-slate-600 dark:text-slate-300 text-left space-y-2 bg-slate-50 dark:bg-[#1c232f] p-3 rounded-xl border border-slate-200 dark:border-[#364356]">
           <div>คุณกำลังจะลบข้อมูลพนักงาน: <strong>${employee.first_name_th || ''} ${employee.last_name_th || ''}</strong></div>
           <div>รหัส: <strong class="text-orange-600 dark:text-orange-400">${employee.employee_code}</strong></div>
-          <div class="text-rose-600 dark:text-rose-400 font-semibold mt-1">⚠️ ข้อมูลบัญชีและประวัติทั้งหมดจะถูกลบถาวร ไม่สามารถกู้คืนได้</div>
+          <div class="text-rose-600 dark:text-rose-400 font-semibold mt-1">ข้อมูลบัญชีและประวัติทั้งหมดจะถูกลบถาวร ไม่สามารถกู้คืนได้</div>
         </div>
       `,
       icon: 'warning',
@@ -405,66 +405,6 @@ export default function EmployeeListPage() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEmployees = sortedEmployees.slice(startIndex, startIndex + itemsPerPage);
 
-  // Leave Balances Logic
-  const [showLeaveModal, setShowLeaveModal] = useState(false);
-  const [selectedLeaveEmp, setSelectedLeaveEmp] = useState(null);
-  const [leaveBalances, setLeaveBalances] = useState([]);
-  const [isSavingLeave, setIsSavingLeave] = useState(false);
-
-  const handleOpenLeaveModal = async (employee) => {
-    setSelectedLeaveEmp(employee);
-    setLeaveBalances([]);
-    setShowLeaveModal(true);
-    try {
-      const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/leave/employee/${employee.id}/balances`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await response.json();
-      if (response.ok && data.status === 'success') {
-        setLeaveBalances(data.data);
-      } else {
-        throw new Error(data.message || 'ไม่สามารถโหลดข้อมูลวันลาได้');
-      }
-    } catch (err) {
-      Swal.fire('ผิดพลาด', err.message, 'error');
-      setShowLeaveModal(false);
-    }
-  };
-
-  const handleLeaveBalanceChange = (id, newDays) => {
-    setLeaveBalances(prev => prev.map(b => b.id === id ? { ...b, total_days: Number(newDays) } : b));
-  };
-
-  const handleSaveLeaveBalances = async () => {
-    setIsSavingLeave(true);
-    try {
-      const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
-      const payload = {
-        balances: leaveBalances.map(b => ({ id: b.id, total_days: b.total_days }))
-      };
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/leave/employee/${selectedLeaveEmp.id}/balances`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json();
-      if (response.ok && data.status === 'success') {
-        Swal.fire('สำเร็จ', 'บันทึกวันลาเรียบร้อยแล้ว', 'success');
-        setShowLeaveModal(false);
-      } else {
-        throw new Error(data.message || 'เกิดข้อผิดพลาด');
-      }
-    } catch (err) {
-      Swal.fire('ผิดพลาด', err.message, 'error');
-    } finally {
-      setIsSavingLeave(false);
-    }
-  };
-
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         
@@ -492,7 +432,7 @@ export default function EmployeeListPage() {
           </button>
         </div>
 
-        {/* 🏢 Company Filter Tabs Bar */}
+        {/* Company Filter Tabs Bar */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4">
           {companiesList.map(comp => {
             const count = comp === 'ALL' ? employees.length : (companyCounts[comp] || 0);
@@ -507,7 +447,7 @@ export default function EmployeeListPage() {
                     : 'bg-white dark:bg-[#262f3f] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#303b4e] hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-[#364356]'
                 }`}
               >
-                <span>{comp === 'ALL' ? '🏢 ทั้งหมด' : `🏢 ${comp}`}</span>
+                <span>{comp === 'ALL' ? 'ทั้งหมด' : comp}</span>
                 <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
                   isSelected ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-[#1c232f] text-slate-600 dark:text-slate-300'
                 }`}>
@@ -518,7 +458,7 @@ export default function EmployeeListPage() {
           })}
         </div>
 
-        {/* 🔍 Search & Filters Bar */}
+        {/* Search & Filters Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-[#262f3f] p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-[#364356] shadow-sm mb-6 transition-colors">
           
           <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full md:w-auto">
@@ -583,7 +523,7 @@ export default function EmployeeListPage() {
         {/* Table & Mobile Cards Section */}
         <div className="bg-white dark:bg-[#262f3f] rounded-2xl border border-slate-200 dark:border-[#364356] shadow-sm overflow-hidden mb-6 transition-colors">
           
-          {/* 💻 Desktop Table View (md:block) - Fit to 100% Screen width with No Horizontal Scroll */}
+          {/* Desktop Table View (md:block) - Fit to 100% Screen width with No Horizontal Scroll */}
           <div className="hidden md:block w-full overflow-hidden">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
@@ -704,7 +644,7 @@ export default function EmployeeListPage() {
                             }`}
                             title="คลิกเพื่อดูรายละเอียดทรัพย์สินที่ถือครอง"
                           >
-                            <span>💻</span>
+                            <Laptop size={13} className="shrink-0" />
                             <span>{employee.asset_count || 0} เครื่อง</span>
                             {(employee.asset_count || 0) > 0 && (
                               <span className="text-[10px] text-amber-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">→</span>
@@ -804,7 +744,7 @@ export default function EmployeeListPage() {
             </table>
           </div>
 
-          {/* 📱 Mobile Card View (md:hidden) */}
+          {/* Mobile Card View (md:hidden) */}
           <div className="block md:hidden divide-y divide-slate-100">
             {isLoading ? (
               <MobileCardSkeleton count={4} />
@@ -864,13 +804,14 @@ export default function EmployeeListPage() {
                       <button
                         type="button"
                         onClick={() => handleOpenAssetsModal(employee)}
-                        className={`inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
+                        className={`inline-flex items-center gap-1.5 mt-0.5 px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
                           (employee.asset_count || 0) > 0
                             ? 'bg-amber-50 dark:bg-amber-950/40 text-[#f89919] dark:text-amber-400 border border-amber-200 dark:border-amber-900 active:bg-amber-100'
                             : 'bg-slate-100 dark:bg-[#262f3f] text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-[#364356]'
                         }`}
                       >
-                        💻 {employee.asset_count || 0} เครื่อง {(employee.asset_count || 0) > 0 && '🔍'}
+                        <Laptop size={12} className="shrink-0" />
+                        <span>{employee.asset_count || 0} เครื่อง</span>
                       </button>
                     </div>
                     {employee.email && (
@@ -972,76 +913,7 @@ export default function EmployeeListPage() {
           )}
         </div>
 
-        {/* Leave Balances Modal */}
-        {showLeaveModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-[#262f3f] rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-100 dark:border-[#364356] animate-in zoom-in-95 duration-200">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-[#364356] flex justify-between items-center bg-slate-50 dark:bg-[#1c232f]">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <CalendarRange size={20} className="text-[#f89919]" />
-                  จัดการโควต้าวันลา
-                </h3>
-                <button onClick={() => setShowLeaveModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-[#303b4e] p-1 rounded-full transition-colors">
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="p-6">
-                <div className="mb-4">
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    พนักงาน: <span className="font-semibold text-slate-900 dark:text-slate-100">{selectedLeaveEmp?.full_name_th}</span>
-                  </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    ปี: <span className="font-semibold text-slate-900 dark:text-slate-100">{new Date().getFullYear()}</span>
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  {leaveBalances.length === 0 ? (
-                    <div className="text-center py-4 text-sm text-slate-500 dark:text-slate-400 flex flex-col items-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-indigo-500 border-t-transparent mb-2"></div>
-                      กำลังโหลดข้อมูล...
-                    </div>
-                  ) : (
-                    leaveBalances.map(bal => (
-                      <div key={bal.id} className="flex items-center justify-between p-3 border border-slate-200 dark:border-[#364356] rounded-lg bg-slate-50/50 dark:bg-[#1c232f]">
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{bal.leave_type_name}</span>
-                        <div className="flex items-center gap-2">
-                          <input 
-                            type="number" 
-                            min="0"
-                            step="0.5"
-                            value={bal.total_days}
-                            onChange={(e) => handleLeaveBalanceChange(bal.id, e.target.value)}
-                            className="w-20 px-2 py-1 text-sm border border-slate-300 dark:border-[#364356] bg-white dark:bg-[#262f3f] text-slate-900 dark:text-slate-100 rounded text-center focus:ring-2 focus:ring-indigo-500 outline-none"
-                          />
-                          <span className="text-sm text-slate-500 dark:text-slate-400">วัน</span>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                <div className="mt-6 flex justify-end gap-3">
-                  <button 
-                    onClick={() => setShowLeaveModal(false)}
-                    className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-[#1c232f] border border-slate-300 dark:border-[#364356] rounded-lg hover:bg-slate-50 dark:hover:bg-[#303b4e] transition-colors"
-                  >
-                    ยกเลิก
-                  </button>
-                  <button 
-                    onClick={handleSaveLeaveBalances}
-                    disabled={isSavingLeave || leaveBalances.length === 0}
-                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                  >
-                    {isSavingLeave ? 'กำลังบันทึก...' : 'บันทึก'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 💻 Asset Quick View Modal */}
+        {/* Asset Quick View Modal */}
         {showAssetModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
             <div className="bg-white dark:bg-[#262f3f] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100 dark:border-[#364356] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
@@ -1050,7 +922,7 @@ export default function EmployeeListPage() {
               <div className="px-5 py-4 border-b border-slate-100 dark:border-[#364356] flex items-center justify-between bg-gradient-to-r from-slate-50 via-amber-50/40 to-slate-50 dark:from-[#1c232f] dark:via-amber-950/20 dark:to-[#1c232f]">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/10 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-700/50 flex items-center justify-center text-[#f89919] shrink-0 font-bold text-lg shadow-xs">
-                    💻
+                    <Laptop size={20} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -1089,7 +961,7 @@ export default function EmployeeListPage() {
                 ) : empAssetsList.length === 0 ? (
                   <div className="py-12 text-center text-slate-400 dark:text-slate-500 bg-white dark:bg-[#262f3f] rounded-xl border border-dashed border-slate-200 dark:border-[#364356] p-6 space-y-3">
                     <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[#1c232f] text-slate-400 flex items-center justify-center mx-auto text-xl">
-                      📦
+                      <Package size={24} />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-slate-700 dark:text-slate-200">ไม่พบทรัพย์สินที่ถือครอง</p>
@@ -1147,28 +1019,28 @@ export default function EmployeeListPage() {
                         {/* Specs Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                           <div className="bg-slate-50 dark:bg-[#1c232f] p-2 rounded-lg border border-slate-100 dark:border-[#364356]">
-                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">⚡ หน่วยประมวลผล (CPU)</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">หน่วยประมวลผล (CPU)</span>
                             <span className="font-bold text-slate-700 dark:text-slate-200 text-xs truncate block" title={asset.cpu}>
                               {asset.cpu || '-'}
                             </span>
                           </div>
 
                           <div className="bg-slate-50 dark:bg-[#1c232f] p-2 rounded-lg border border-slate-100 dark:border-[#364356]">
-                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">💾 RAM / ความจุ</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">RAM / ความจุ</span>
                             <span className="font-bold text-slate-700 dark:text-slate-200 text-xs truncate block">
                               {asset.ram ? `${asset.ram} GB` : '-'} / {asset.storage ? `${asset.storage} GB` : '-'}
                             </span>
                           </div>
 
                           <div className="bg-slate-50 dark:bg-[#1c232f] p-2 rounded-lg border border-slate-100 dark:border-[#364356]">
-                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">🖥️ ขนาดหน้าจอ</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">ขนาดหน้าจอ</span>
                             <span className="font-bold text-slate-700 dark:text-slate-200 text-xs truncate block">
                               {asset.display_size || '-'}
                             </span>
                           </div>
 
                           <div className="bg-slate-50 dark:bg-[#1c232f] p-2 rounded-lg border border-slate-100 dark:border-[#364356]">
-                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">📍 สาขา / สถานที่</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-medium">สาขา / สถานที่</span>
                             <span className="font-bold text-slate-700 dark:text-slate-200 text-xs truncate block">
                               {asset.location || '-'}
                             </span>
@@ -1252,8 +1124,7 @@ export default function EmployeeListPage() {
           </div>
         )}
 
-        {/* 🚪 IT Offboarding & Asset Recovery Checklist Modal */}
-        {/* 🚪 IT Offboarding & Asset Recovery Checklist Modal */}
+        {/* IT Offboarding & Asset Recovery Checklist Modal */}
         {showOffboardModal && offboardEmp && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
             <div className="bg-white dark:bg-[#262f3f] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-rose-100 dark:border-[#364356] flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200">
@@ -1399,7 +1270,7 @@ export default function EmployeeListPage() {
                               </div>
 
                               <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-white dark:bg-[#262f3f] border border-slate-200 dark:border-[#364356] text-slate-600 dark:text-slate-300 shrink-0">
-                                {isChecked ? '✅ เรียกคืนเข้าคลัง' : 'ไม่เรียกคืน'}
+                                {isChecked ? 'เรียกคืนเข้าคลัง' : 'ไม่เรียกคืน'}
                               </span>
                             </div>
                           );

@@ -1,4 +1,4 @@
-// ดึงการเชื่อมต่อ Database เข้ามา (แก้ไขพาธ ../config/db ให้ตรงกับโปรเจกต์คุณ)
+// Database Connection Pool
 const pool = require('../config/db'); 
 
 // 1. ฟังก์ชันดึงรหัสพนักงานอัตโนมัติ (แบบมีปี พ.ศ. 2 หลัก)
@@ -827,7 +827,7 @@ exports.sendWelcomeEmail = async (req, res) => {
         const defaultHtmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
                 <div style="background-color: #2563eb; padding: 20px; text-align: center;">
-                    <h2 style="color: white; margin: 0;">🎉 แจ้งพนักงานใหม่เข้าทำงาน</h2>
+                    <h2 style="color: white; margin: 0;">แจ้งพนักงานใหม่เข้าทำงาน</h2>
                 </div>
                 <div style="padding: 20px;">
                     <h3 style="color: #1e293b; margin-top: 0;">เรียนทีมงานที่เกี่ยวข้อง,</h3>
@@ -934,14 +934,10 @@ exports.deleteEmployee = async (req, res) => {
         // 2. ลบ credentials
         await connection.execute('DELETE FROM employee_credentials WHERE employee_id = ?', [id]);
 
-        // 3. ลบ leave_balances & leave_requests
-        await connection.execute('DELETE FROM leave_balances WHERE employee_id = ?', [id]);
-        await connection.execute('DELETE FROM leave_requests WHERE employee_id = ?', [id]);
-
-        // 4. ปลดผู้ถือครอง assets (ถ้ามี)
+        // 3. ปลดผู้ถือครอง assets (ถ้ามี)
         await connection.execute('UPDATE assets SET assigned_to = NULL WHERE assigned_to = ?', [id]);
 
-        // 5. ลบพนักงาน
+        // 4. ลบพนักงาน
         await connection.execute('DELETE FROM employees WHERE id = ?', [id]);
 
         await connection.commit();

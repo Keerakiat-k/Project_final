@@ -16,7 +16,7 @@ exports.createCompany = async (req, res) => {
   const { prefix, name, status } = req.body;
   if (!prefix || !name) return res.status(400).json({ status: 'error', message: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
   try {
-    const [result] = await pool.query('INSERT INTO companies (prefix, name, status) VALUES (?, ?, ?)', [prefix, name, status || 'Active']);
+    await pool.query('INSERT INTO companies (prefix, name, status) VALUES (?, ?, ?)', [prefix, name, status || 'Active']);
     res.status(201).json({ status: 'success', message: 'เพิ่มบริษัทสำเร็จ' });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') return res.status(400).json({ status: 'error', message: 'Prefix นี้มีอยู่ในระบบแล้ว' });

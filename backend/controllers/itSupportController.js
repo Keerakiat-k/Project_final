@@ -2,7 +2,7 @@ const pool = require('../config/db');
 const nodemailer = require('nodemailer');
 
 // -------------------------------------------------------------
-// 📧 Helper: ส่งอีเมลแจ้งเตือนทีม IT เมื่อมีการเปิด Ticket ใหม่
+// Helper: ส่งอีเมลแจ้งเตือนทีม IT เมื่อมีการเปิด Ticket ใหม่
 // -------------------------------------------------------------
 async function sendTicketNotificationEmail(ticket) {
   try {
@@ -68,17 +68,17 @@ async function sendTicketNotificationEmail(ticket) {
       urgencyColor = '#dc2626';
       urgencyBg = '#fef2f2';
       urgencyBorder = '#fecaca';
-      urgencyText = `🔴 ${ticket.urgency}`;
+      urgencyText = ticket.urgency;
     } else if (ticket.urgency?.includes('ปานกลาง') || ticket.urgency?.includes('ด่วน') || ticket.urgency === 'High') {
       urgencyColor = '#d97706';
       urgencyBg = '#fffbeb';
       urgencyBorder = '#fde68a';
-      urgencyText = `🟡 ${ticket.urgency}`;
+      urgencyText = ticket.urgency;
     } else if (ticket.urgency?.includes('ต่ำ') || ticket.urgency === 'Low') {
       urgencyColor = '#16a34a';
       urgencyBg = '#f0fdf4';
       urgencyBorder = '#bbf7d0';
-      urgencyText = `🟢 ${ticket.urgency}`;
+      urgencyText = ticket.urgency;
     }
 
     const urgencyBadge = `<table border="0" cellpadding="0" cellspacing="0" style="display: inline-table;"><tr><td bgcolor="${urgencyBg}" style="background-color: ${urgencyBg}; color: ${urgencyColor}; border: 1px solid ${urgencyBorder}; padding: 3px 10px; border-radius: 6px; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 12.5px; font-weight: bold;">${urgencyText}</td></tr></table>`;
@@ -96,7 +96,7 @@ async function sendTicketNotificationEmail(ticket) {
         <tr>
           <td bgcolor="#0f172a" style="background-color: #0f172a; padding: 28px 24px 22px; text-align: center; border-bottom: 4px solid #f89919;">
             <div style="color: #ffffff; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 20px; font-weight: bold; margin-bottom: 12px; line-height: 1.3;">
-              🚨 มีการแจ้งปัญหา IT ใหม่ (New IT Ticket)
+              มีการแจ้งปัญหา IT ใหม่ (New IT Ticket)
             </div>
             <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto;">
               <tr>
@@ -147,7 +147,7 @@ async function sendTicketNotificationEmail(ticket) {
             <table width="100%" border="0" cellpadding="14" cellspacing="0" bgcolor="#fffbeb" style="background-color: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f89919; margin: 20px 0 10px;">
               <tr>
                 <td style="font-family: 'Segoe UI', Tahoma, Arial, sans-serif;">
-                  <div style="color: #92400e; font-weight: bold; font-size: 13px; margin-bottom: 6px;">📝 รายละเอียดอาการ / ปัญหาที่พบ:</div>
+                  <div style="color: #92400e; font-weight: bold; font-size: 13px; margin-bottom: 6px;">รายละเอียดอาการ / ปัญหาที่พบ:</div>
                   <div style="color: #0f172a; font-size: 14px; line-height: 1.6;">${formattedDescription}</div>
                 </td>
               </tr>
@@ -158,7 +158,7 @@ async function sendTicketNotificationEmail(ticket) {
               <tr>
                 <td align="center" bgcolor="#f89919" style="background-color: #f89919; border-radius: 8px;">
                   <a href="https://portal.ascgglobalgroup.com/admin/it-support" target="_blank" style="font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 14px; font-weight: bold; color: #0f172a; text-decoration: none; padding: 13px 30px; display: inline-block;">
-                    🔗 เข้าสู่ระบบเพื่อตรวจสอบและรับงาน (Open Ticket)
+                    เข้าสู่ระบบเพื่อตรวจสอบและรับงาน (Open Ticket)
                   </a>
                 </td>
               </tr>
@@ -196,9 +196,9 @@ async function sendTicketNotificationEmail(ticket) {
       html: html
     });
 
-    console.log(`[Email Sent] ✅ ส่งแจ้งเตือน IT Ticket ${ticket.ticket_no} ไปยัง: ${toEmails.join(', ')} สำเร็จ`);
+    console.log(`[Email Sent] ส่งแจ้งเตือน IT Ticket ${ticket.ticket_no} ไปยัง: ${toEmails.join(', ')} สำเร็จ`);
   } catch (err) {
-    console.error(`[Email Error] ❌ ส่งอีเมลแจ้งเตือน IT Ticket ${ticket.ticket_no} ไม่สำเร็จ:`, err.message);
+    console.error(`[Email Error] ส่งอีเมลแจ้งเตือน IT Ticket ${ticket.ticket_no} ไม่สำเร็จ:`, err.message);
   }
 }
 
@@ -209,7 +209,7 @@ exports.createTicket = async (req, res) => {
   const { name, department, category, urgency, description } = req.body;
 
   try {
-    // --- 🌟 เริ่มสร้างรหัสแบบ IT-6907001 🌟 ---
+    // --- เริ่มสร้างรหัสแบบ IT-6907001 ---
     const now = new Date();
     // 1. หาปี พ.ศ. เอาแค่ 2 ตัวท้าย (เช่น 2026 + 543 = 2569 ตัดเหลือ '69')
     const thaiYear = (now.getFullYear() + 543).toString().slice(-2);
@@ -233,16 +233,16 @@ exports.createTicket = async (req, res) => {
 
     const runningStr = runningNum.toString().padStart(3, '0');
     const ticketNo = `${prefix}${runningStr}`;
-    // --- 🌟 จบการสร้างรหัส 🌟 ---
+    // --- จบการสร้างรหัส ---
 
     // บันทึกลงฐานข้อมูลด้วยรหัสใหม่
-    const [result] = await pool.execute(
+    await pool.execute(
       `INSERT INTO it_supports (ticket_no, name, department, category, urgency, description, status) 
        VALUES (?, ?, ?, ?, ?, ?, 'รอรับเรื่อง')`,
       [ticketNo, name, department, category, urgency, description]
     );
 
-    // 📧 ส่งอีเมลแจ้งเตือนทีม IT แบบ Asynchronous ทันที
+    // ส่งอีเมลแจ้งเตือนทีม IT แบบ Asynchronous ทันที
     sendTicketNotificationEmail({
       ticket_no: ticketNo,
       name,

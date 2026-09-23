@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Server, Plus, Search, Edit, Trash2, Globe, Mail, Save, X, Eye, EyeOff, ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import { Server, Plus, Search, Edit, Trash2, Globe, Mail, Save, X, Eye, EyeOff, ArrowDown, ArrowUp, ArrowUpDown, AlertTriangle } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 export default function HostingAdminPage() {
@@ -9,7 +9,7 @@ export default function HostingAdminPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // 🔄 Sorting State
+  // Sorting State
   const [sortField, setSortField] = useState('expiration'); // 'expiration' | 'domain' | 'status'
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' (earliest expiring first) | 'desc'
 
@@ -235,7 +235,7 @@ export default function HostingAdminPage() {
           </div>
         </div>
 
-        {/* 💻 Desktop Table View (md:block) */}
+        {/* Desktop Table View (md:block) */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -365,7 +365,7 @@ export default function HostingAdminPage() {
           </table>
         </div>
 
-        {/* 📱 Mobile Card View (md:hidden) */}
+        {/* Mobile Card View (md:hidden) */}
         <div className="block md:hidden divide-y divide-slate-100 dark:divide-[#364356]">
           {isLoading ? (
             <div className="py-8 text-center text-slate-500 dark:text-slate-400 text-xs">กำลังโหลดข้อมูล...</div>
@@ -435,9 +435,9 @@ export default function HostingAdminPage() {
                     {/* Expiration */}
                     <div className="pt-2 border-t border-slate-200/60 dark:border-[#364356] flex items-center justify-between">
                       <span className="text-slate-500 dark:text-slate-400 text-[11px]">วันหมดอายุ:</span>
-                      <span className={`text-[11.5px] font-medium ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-700 dark:text-slate-200'}`}>
-                        {item.expiration_date ? new Date(item.expiration_date).toLocaleDateString('th-TH') : 'ไม่ระบุ'}
-                        {isExpiringSoon && ' ⚠️'}
+                      <span className={`text-[11.5px] font-medium flex items-center gap-1 ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-700 dark:text-slate-200'}`}>
+                        <span>{item.expiration_date ? new Date(item.expiration_date).toLocaleDateString('th-TH') : 'ไม่ระบุ'}</span>
+                        {isExpiringSoon && <AlertTriangle size={12} className="text-rose-500 shrink-0" />}
                       </span>
                     </div>
 

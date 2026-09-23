@@ -1,4 +1,4 @@
-import { ShieldAlert, ArrowLeft, RefreshCw } from 'lucide-react';
+import { ShieldAlert, ArrowLeft, RefreshCw, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ForbiddenPage() {
@@ -36,7 +36,7 @@ export default function ForbiddenPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#1e2430] flex flex-col items-center justify-center p-4">
       <div className="bg-white dark:bg-[#262f3f] p-8 md:p-12 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none max-w-md w-full text-center border border-slate-100 dark:border-[#364356] relative overflow-hidden">
-        {/* Background Decorative */}
+        {/* Decorative Top Accent */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-orange-500"></div>
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-red-50 dark:bg-rose-950/20 rounded-full blur-2xl opacity-60"></div>
         <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-orange-50 dark:bg-amber-950/20 rounded-full blur-2xl opacity-60"></div>
@@ -55,7 +55,8 @@ export default function ForbiddenPage() {
           {isSimulating && (
             <div className="mb-6 p-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl text-left text-xs text-amber-900 dark:text-amber-200">
               <div className="font-bold flex items-center gap-1.5 mb-1">
-                <span>🎭 คุณกำลังจำลองสิทธิ์:</span>
+                <UserCheck size={16} className="text-[#f89919]" />
+                <span>คุณกำลังจำลองสิทธิ์:</span>
                 <span className="bg-[#f89919] text-white px-2 py-0.5 rounded-md font-mono">{user.role}</span>
               </div>
               <p className="text-slate-600 dark:text-slate-400 text-[11px] mt-1">

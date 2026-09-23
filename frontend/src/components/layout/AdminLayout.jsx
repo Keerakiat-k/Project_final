@@ -94,7 +94,7 @@ export default function AdminLayout() {
     { id: 5, name: 'Employee' }
   ];
   const displayRoles = simulationRoles && simulationRoles.length > 0 ? simulationRoles : fallbackRoles;
-  // 🔒 แถบจำลองสิทธิ์แสดงเฉพาะผู้ดูแลระบบ (Admin) เท่านั้น (User / HR / Employee อื่นๆ จะมองไม่เห็น)
+  // แถบจำลองสิทธิ์แสดงเฉพาะผู้ดูแลระบบ (Admin) เท่านั้น (User / HR / Employee อื่นๆ จะมองไม่เห็น)
   const canSimulate = Boolean(
     userInfo?.original_role === 'Admin' || 
     (userInfo?.role === 'Admin' && !userInfo?.original_role) || 
@@ -157,7 +157,7 @@ export default function AdminLayout() {
           const resignedEmps = resignedRes && resignedRes.ok ? (await resignedRes.json()).data || [] : [];
           const hostingsData = hostingsRes && hostingsRes.ok ? (await hostingsRes.json()).data || [] : [];
 
-          // 🌟 คัดเฉพาะทิกเก็ตแจ้งซ่อมที่รอรับเรื่อง / กำลังดำเนินการ 🌟
+          // คัดเฉพาะทิกเก็ตแจ้งซ่อมที่รอรับเรื่อง / กำลังดำเนินการ
           const activeTickets = tickets.filter(t => 
             t.status !== 'แก้ไขเสร็จสิ้น' && 
             t.status !== 'เสร็จสิ้น' && 
@@ -167,7 +167,7 @@ export default function AdminLayout() {
             t.status !== 'Resolved'
           );
 
-          // 🌟 คัดเฉพาะ Hosting / Domain ที่ใกล้หมดอายุใน 30 วัน หรือหมดอายุแล้ว 🌟
+          // คัดเฉพาะ Hosting / Domain ที่ใกล้หมดอายุใน 30 วัน หรือหมดอายุแล้ว
           const thirtyDaysLater = new Date();
           thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
 
@@ -313,7 +313,7 @@ export default function AdminLayout() {
               </button>
               <button id="swal-confirm-btn" type="button"
                 style="flex: 2; height: 44px; background: linear-gradient(135deg, #2563eb, #4f46e5); color: white; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.2px; box-shadow: 0 4px 12px rgba(37,99,235,0.35);">
-                💾 บันทึกและสร้างสิทธิ์
+                บันทึกและสร้างสิทธิ์
               </button>
             </div>
 
@@ -332,12 +332,12 @@ export default function AdminLayout() {
           const roleId = document.getElementById('swal-input-role').value;
           const validationEl = document.getElementById('swal-validation');
           if (!email) {
-            validationEl.innerText = '⚠ กรุณากรอกอีเมล หรือเลือก "ไม่ใช้อีเมล"';
+            validationEl.innerText = 'กรุณากรอกอีเมล หรือเลือก "ไม่ใช้อีเมล"';
             validationEl.style.display = 'block';
             return;
           }
           if (!roleId) {
-            validationEl.innerText = '⚠ กรุณาเลือกสิทธิ์การใช้งาน';
+            validationEl.innerText = 'กรุณาเลือกสิทธิ์การใช้งาน';
             validationEl.style.display = 'block';
             return;
           }
@@ -410,15 +410,15 @@ export default function AdminLayout() {
             <div style="background: #fdf2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
               <div style="font-size: 13px; font-weight: 700; color: #991b1b; margin-bottom: 6px;">รายละเอียดการถอดสิทธิ์:</div>
               <div style="font-size: 12.5px; color: #4b5563; space-y: 4px;">
-                <div>🏢 สังกัด: <span style="font-weight: 600; color: #111827;">${emp.company_prefix || '-'}</span> | แผนก: <span style="font-weight: 600; color: #111827;">${emp.department_name || 'ทั่วไป'}</span></div>
-                <div>💼 ตำแหน่ง: <span style="font-weight: 600; color: #111827;">${emp.position || '-'}</span></div>
-                <div>📧 อีเมล: <span style="font-weight: 600; color: #111827;">${emp.email || '-'}</span></div>
+                <div>สังกัด: <span style="font-weight: 600; color: #111827;">${emp.company_prefix || '-'}</span> | แผนก: <span style="font-weight: 600; color: #111827;">${emp.department_name || 'ทั่วไป'}</span></div>
+                <div>ตำแหน่ง: <span style="font-weight: 600; color: #111827;">${emp.position || '-'}</span></div>
+                <div>อีเมล: <span style="font-weight: 600; color: #111827;">${emp.email || '-'}</span></div>
               </div>
             </div>
 
             <!-- Warning Notice -->
             <div style="background: #fff1f2; border-left: 4px solid #e11d48; border-radius: 8px; padding: 12px 14px; margin-bottom: 24px;">
-              <div style="font-size: 12px; font-weight: 700; color: #9f1239;">⚠️ ข้อควรระวัง:</div>
+              <div style="font-size: 12px; font-weight: 700; color: #9f1239;">ข้อควรระวัง:</div>
               <div style="font-size: 11.5px; color: #be123c; margin-top: 2px;">เมื่อกดถอดสิทธิ์ บัญชีผู้ใช้งานนี้จะไม่สามารถเข้าสู่ระบบหรือเข้าถึงข้อมูลทรัพย์สินบริษัทได้อีกต่อไป</div>
             </div>
 
@@ -430,7 +430,7 @@ export default function AdminLayout() {
               </button>
               <button id="swal-revoke-confirm" type="button"
                 style="flex: 2; height: 44px; background: linear-gradient(135deg, #dc2626, #991b1b); color: white; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.2px; box-shadow: 0 4px 12px rgba(220,38,38,0.35);">
-                🗑️ ยืนยันถอดสิทธิ์การเข้าใช้งาน
+                ยืนยันถอดสิทธิ์การเข้าใช้งาน
               </button>
             </div>
 
@@ -476,7 +476,7 @@ export default function AdminLayout() {
     });
   };
 
-  // 🧹 เคลียร์การแจ้งเตือนทั้งหมด
+  // เคลียร์การแจ้งเตือนทั้งหมด
   const handleClearAllNotifications = async () => {
     Swal.fire({
       title: 'เคลียร์การแจ้งเตือนทั้งหมด?',
@@ -875,7 +875,7 @@ export default function AdminLayout() {
               <Menu size={20} />
             </button>
 
-            {/* 🎭 Role Simulation Bar */}
+            {/* Role Simulation Bar */}
             {canSimulate && (
               <div className="flex items-center gap-1 sm:gap-1.5 text-xs bg-slate-100 dark:bg-[#1c232f] p-1 sm:p-1.5 rounded-xl border border-slate-200 dark:border-[#364356] max-w-[55vw] sm:max-w-none">
                 <span className="font-semibold text-slate-500 dark:text-slate-400 px-1.5 flex items-center shrink-0 text-[11px] sm:text-xs">
@@ -908,7 +908,7 @@ export default function AdminLayout() {
                       className="whitespace-nowrap px-2 py-1 rounded-lg text-[10.5px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-900/60 transition-all cursor-pointer shrink-0 ml-0.5"
                       title="คืนค่าสิทธิ์ดั้งเดิม (Reset Role)"
                     >
-                      ✕ คืนค่า
+                      คืนค่า
                     </button>
                   )}
                 </div>
@@ -917,7 +917,7 @@ export default function AdminLayout() {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* ☀️/🌙 Dark Mode Toggle Button */}
+            {/* Dark Mode Toggle Button */}
             <button
               type="button"
               onClick={toggleTheme}
@@ -932,7 +932,7 @@ export default function AdminLayout() {
               )}
             </button>
 
-            {/* 🔔 Interactive Notification Dropdown */}
+            {/* Interactive Notification Dropdown */}
             <div ref={notifRef} className="relative">
               <button 
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
@@ -973,7 +973,7 @@ export default function AdminLayout() {
                             เคลียร์ทั้งหมด
                           </button>
                         )}
-                        <button onClick={() => setIsNotifOpen(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer">✕</button>
+                        <button onClick={() => setIsNotifOpen(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer" aria-label="Close notifications"><X size={16} /></button>
                       </div>
                     </div>
 
@@ -1004,7 +1004,7 @@ export default function AdminLayout() {
                                 {emp.company_prefix} • เริ่มงาน: {emp.start_date ? new Date(emp.start_date).toLocaleDateString('th-TH') : '-'}
                               </div>
                               <div className="text-[#f89919] font-bold text-[11px] mt-1 flex items-center gap-1">
-                                ⚡ คลิกเพื่อสร้างสิทธิ์และบันทึกอีเมล →
+                                คลิกเพื่อสร้างสิทธิ์และบันทึกอีเมล →
                               </div>
                             </div>
                           </div>
@@ -1029,7 +1029,7 @@ export default function AdminLayout() {
                                 {emp.company_prefix} • ลาออก: {emp.resignation_date ? new Date(emp.resignation_date).toLocaleDateString('th-TH') : '-'}
                               </div>
                               <div className="text-rose-600 font-bold text-[11px] mt-1 flex items-center gap-1">
-                                🗑️ คลิกเพื่อถอดสิทธิ์และเรียกคืนทรัพย์สิน →
+                                คลิกเพื่อถอดสิทธิ์และเรียกคืนทรัพย์สิน →
                               </div>
                             </div>
                           </div>
@@ -1049,7 +1049,7 @@ export default function AdminLayout() {
                               <div className="font-bold text-slate-900 dark:text-slate-100">แจ้งซ่อม IT: {t.ticket_no || 'Helpdesk'}</div>
                               <div className="text-slate-600 dark:text-slate-400 font-semibold text-[11px]">{t.name} • {t.category}</div>
                               <div className={`font-bold text-[11px] mt-0.5 ${t.status === 'กำลังดำเนินการ' ? 'text-indigo-600 dark:text-indigo-400' : 'text-amber-600 dark:text-amber-400'}`}>
-                                {t.status === 'กำลังดำเนินการ' ? '🛠️ กำลังดำเนินการ' : '⏳ รอรับเรื่อง'}
+                                {t.status === 'กำลังดำเนินการ' ? 'กำลังดำเนินการ' : 'รอรับเรื่อง'}
                               </div>
                             </div>
                           </div>
@@ -1083,7 +1083,7 @@ export default function AdminLayout() {
                                   วันหมดอายุ: {expDateFormatted} {h.website_url ? `• ${h.website_url}` : ''}
                                 </div>
                                 <div className="text-[#f89919] font-bold text-[11px] mt-1 flex items-center gap-1">
-                                  🌐 คลิกเพื่อตรวจสอบและจัดการโดเมน →
+                                  คลิกเพื่อตรวจสอบและจัดการโดเมน →
                                 </div>
                               </div>
                             </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, FileText, Megaphone, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, FileText, Megaphone, Image as ImageIcon, X } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 export default function AddAnnouncementPage() {
@@ -179,9 +179,9 @@ export default function AddAnnouncementPage() {
                       <button 
                         type="button"
                         onClick={() => { setCoverImage(null); setImagePreview(null); }}
-                        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-red-600"
+                        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-red-600 cursor-pointer"
                       >
-                        ✕
+                        <X size={16} />
                       </button>
                     </div>
                   ) : (

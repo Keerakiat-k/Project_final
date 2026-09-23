@@ -15,7 +15,7 @@ router.get('/it-health-check/executive-summary', verifyToken, requirePermission(
 // ดึงข้อมูลสำหรับ Export Excel
 router.get('/it-health-check/export', verifyToken, requirePermission('manage_it_support'), itHealthController.getExportData);
 
-// 🌟 ดาวน์โหลดไฟล์ Excel โดยอิงจากไฟล์ต้นแบบ IT Report 08-2026.xlsx 100% 🌟
+// ดาวน์โหลดไฟล์ Excel โดยอิงจากไฟล์ต้นแบบ IT Report 08-2026.xlsx 100%
 router.get('/it-health-check/download-excel', verifyToken, requirePermission('manage_it_support'), itHealthController.downloadExcelReport);
 
 // บันทึก/อัปเดตสถานะการตรวจเช็ครายวันผ่านเว็บ

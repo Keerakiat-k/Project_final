@@ -1,7 +1,5 @@
 const db = require('../config/db');
 const ExcelJS = require('exceljs');
-const path = require('path');
-const fs = require('fs');
 
 // ดึงสถานะตรวจเช็ครายวันของทุกสาขา หรือระบุเฉพาะสาขา/วันที่
 exports.getHealthChecks = async (req, res) => {
@@ -159,43 +157,50 @@ exports.getExecutiveSummary = async (req, res) => {
     const { from_date, to_date } = req.query;
 
     let assetCounts = [];
+    let totalComputers = 0;
+
     try {
-      const [assets] = await db.query(`
-        SELECT COALESCE(company, 'ไม่ระบุบริษัท') as company, COUNT(*) as computer_count
-        FROM assets
-        GROUP BY company
-        ORDER BY computer_count DESC
-      `);
-      assetCounts = assets;
+      // ดึงรายการ assets เพื่อรองรับทั้ง MySQL และ File DB Simulator
+      const [rows] = await db.query('SELECT * FROM assets');
+
+      if (Array.isArray(rows) && rows.length > 0) {
+        if (rows[0] && typeof rows[0].computer_count !== 'undefined') {
+          // หากผลลัพธ์เป็น aggregate row อยู่แล้ว (เช่น กรณี query ผ่าน SQL GROUP BY ใน MySQL)
+          assetCounts = rows.map(r => ({
+            company: r.company || 'ไม่ระบุบริษัท',
+            computer_count: Number(r.computer_count) || 0
+          })).sort((a, b) => b.computer_count - a.computer_count);
+          totalComputers = assetCounts.reduce((acc, curr) => acc + curr.computer_count, 0);
+        } else {
+          // คำนวณนับคอมพิวเตอร์แยกตาม company จริงใน JavaScript จาก raw rows
+          const computerRows = rows.filter(r => {
+            if (!r.category) return true;
+            const cat = String(r.category).toLowerCase().trim();
+            const nonComputerKeywords = ['monitor', 'printer', 'scanner', 'ups', 'accessory', 'จอภาพ', 'เครื่องพิมพ์', 'สแกนเนอร์'];
+            return !nonComputerKeywords.some(keyword => cat.includes(keyword));
+          });
+
+          const companyCountMap = {};
+          computerRows.forEach(row => {
+            const comp = (row.company || row.owner_company || 'ไม่ระบุบริษัท').trim() || 'ไม่ระบุบริษัท';
+            companyCountMap[comp] = (companyCountMap[comp] || 0) + 1;
+          });
+
+          assetCounts = Object.keys(companyCountMap)
+            .map(comp => ({
+              company: comp,
+              computer_count: companyCountMap[comp]
+            }))
+            .sort((a, b) => b.computer_count - a.computer_count);
+
+          totalComputers = computerRows.length;
+        }
+      }
     } catch (e) {
-      assetCounts = [
-        { company: 'AIC', computer_count: 57 },
-        { company: 'AIA', computer_count: 26 },
-        { company: 'CST', computer_count: 8 },
-        { company: 'SQT', computer_count: 8 },
-        { company: 'ASPD', computer_count: 3 },
-        { company: 'AEP', computer_count: 3 },
-        { company: 'Q-AIR', computer_count: 2 },
-        { company: 'AGC', computer_count: 2 },
-        { company: 'QPM', computer_count: 1 }
-      ];
+      console.error('Error fetching assets for executive summary:', e.message);
+      assetCounts = [];
+      totalComputers = 0;
     }
-
-    if (!assetCounts || assetCounts.length === 0) {
-      assetCounts = [
-        { company: 'AIC', computer_count: 57 },
-        { company: 'AIA', computer_count: 26 },
-        { company: 'CST', computer_count: 8 },
-        { company: 'SQT', computer_count: 8 },
-        { company: 'ASPD', computer_count: 3 },
-        { company: 'AEP', computer_count: 3 },
-        { company: 'Q-AIR', computer_count: 2 },
-        { company: 'AGC', computer_count: 2 },
-        { company: 'QPM', computer_count: 1 }
-      ];
-    }
-
-    let totalComputers = assetCounts.reduce((acc, curr) => acc + (Number(curr.computer_count) || 0), 0);
 
     let helpdeskSummary = { total: 0, pending: 0, in_progress: 0, resolved: 0 };
     try {
@@ -284,7 +289,7 @@ exports.getExportData = async (req, res) => {
   }
 };
 
-// 🌟🌟🌟 ส่งออกไฟล์ Excel ดีไซน์ใหม่พรีเมียม (Modern Executive IT Operations Report) 🌟🌟🌟
+// ส่งออกไฟล์ Excel ดีไซน์ใหม่พรีเมียม (Modern Executive IT Operations Report)
 exports.downloadExcelReport = async (req, res) => {
   try {
     const { from_date, to_date } = req.query;
@@ -297,9 +302,9 @@ exports.downloadExcelReport = async (req, res) => {
     workbook.created = new Date();
 
     // -------------------------------------------------------------
-    // SHEET 1: 📊 Executive Dashboard (ภาพรวมผู้บริหาร)
+    // SHEET 1: Executive Dashboard (ภาพรวมผู้บริหาร)
     // -------------------------------------------------------------
-    const dashSheet = workbook.addWorksheet('📊 Executive Dashboard', { views: [{ showGridLines: true }] });
+    const dashSheet = workbook.addWorksheet('Executive Dashboard', { views: [{ showGridLines: true }] });
 
     // Title Banner
     dashSheet.mergeCells('A1:G2');
@@ -352,7 +357,7 @@ exports.downloadExcelReport = async (req, res) => {
 
     // KPI Scorecards (Row 5-6)
     dashSheet.mergeCells('A5:B5'); dashSheet.mergeCells('A6:B6');
-    dashSheet.getCell('A5').value = '💻 คอมพิวเตอร์ในระบบทั้งหมด';
+    dashSheet.getCell('A5').value = 'คอมพิวเตอร์ในระบบทั้งหมด';
     dashSheet.getCell('A6').value = `${totalComputers} เครื่อง`;
     dashSheet.getCell('A5').font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FF475569' } };
     dashSheet.getCell('A6').font = { name: 'Segoe UI', size: 16, bold: true, color: { argb: 'FF0F172A' } };
@@ -362,7 +367,7 @@ exports.downloadExcelReport = async (req, res) => {
     dashSheet.getCell('A6').alignment = { horizontal: 'center', vertical: 'middle' };
 
     dashSheet.mergeCells('C5:D5'); dashSheet.mergeCells('C6:D6');
-    dashSheet.getCell('C5').value = '🎫 งานแจ้งซ่อม IT Helpdesk';
+    dashSheet.getCell('C5').value = 'งานแจ้งซ่อม IT Helpdesk';
     dashSheet.getCell('C6').value = `${tickets.length} รายการ (เสร็จ ${resolvedTickets})`;
     dashSheet.getCell('C5').font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FF1E40AF' } };
     dashSheet.getCell('C6').font = { name: 'Segoe UI', size: 14, bold: true, color: { argb: 'FF1E40AF' } };
@@ -372,7 +377,7 @@ exports.downloadExcelReport = async (req, res) => {
     dashSheet.getCell('C6').alignment = { horizontal: 'center', vertical: 'middle' };
 
     dashSheet.mergeCells('E5:F5'); dashSheet.mergeCells('E6:F6');
-    dashSheet.getCell('E5').value = '⚡ IT System Health Uptime';
+    dashSheet.getCell('E5').value = 'IT System Health Uptime';
     dashSheet.getCell('E6').value = '99.6% (ปกติทุกสาขา)';
     dashSheet.getCell('E5').font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FF065F46' } };
     dashSheet.getCell('E6').font = { name: 'Segoe UI', size: 14, bold: true, color: { argb: 'FF065F46' } };
@@ -420,9 +425,9 @@ exports.downloadExcelReport = async (req, res) => {
 
 
     // -------------------------------------------------------------
-    // SHEET 2: 🎫 IT Helpdesk Tickets (งานแจ้งซ่อม IT)
+    // SHEET 2: IT Helpdesk Tickets (งานแจ้งซ่อม IT)
     // -------------------------------------------------------------
-    const ticketSheet = workbook.addWorksheet('🎫 IT Support Tickets', { views: [{ showGridLines: true }] });
+    const ticketSheet = workbook.addWorksheet('IT Support Tickets', { views: [{ showGridLines: true }] });
 
     // Title Banner
     ticketSheet.mergeCells('A1:H2');
@@ -491,7 +496,7 @@ exports.downloadExcelReport = async (req, res) => {
 
 
     // -------------------------------------------------------------
-    // SHEETS 3..7: 🏢 Branch Health Checks (Soi-10, BD-8, Rayong, BD-15, RAT21)
+    // SHEETS 3..7: Branch Health Checks (Soi-10, BD-8, Rayong, BD-15, RAT21)
     // -------------------------------------------------------------
     let healthQuery = `
       SELECT c.id as check_id, DATE_FORMAT(c.check_date, "%Y-%m-%d") as check_date,
@@ -515,15 +520,15 @@ exports.downloadExcelReport = async (req, res) => {
     } catch (e) {}
 
     const branchListConfig = [
-      { code: 'Soi-10', name: '🏢 สาขา ซอย 10' },
-      { code: 'Soi-74', name: '🏢 สาขา ซอย 74' },
-      { code: 'Soi-21', name: '🏢 สาขา ซอย 21' },
-      { code: 'BD-15', name: '🏢 สาขา ตึก15' },
-      { code: 'Rayong', name: '🏢 สาขา ระยอง' }
+      { code: 'Soi-10', name: 'สาขา ซอย 10' },
+      { code: 'Soi-74', name: 'สาขา ซอย 74' },
+      { code: 'Soi-21', name: 'สาขา ซอย 21' },
+      { code: 'BD-15', name: 'สาขา ตึก15' },
+      { code: 'Rayong', name: 'สาขา ระยอง' }
     ];
 
     branchListConfig.forEach(bConfig => {
-      const bSheet = workbook.addWorksheet(`🏢 ${bConfig.code}`, { views: [{ showGridLines: true }] });
+      const bSheet = workbook.addWorksheet(`${bConfig.code}`, { views: [{ showGridLines: true }] });
 
       // Title Banner
       bSheet.mergeCells('A1:AJ2');

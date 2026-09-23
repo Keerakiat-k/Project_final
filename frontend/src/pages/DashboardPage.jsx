@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
-  Users, UserPlus, UserMinus, ShieldAlert,
-  FileText, Calendar, Wallet, CheckCircle, 
-  Clock, AlertCircle, BarChart3, TrendingUp,
-  Laptop, Server, Activity, ArrowRight, ExternalLink, Bell
+  Users, UserPlus, ShieldAlert,
+  FileText, Wallet, CheckCircle, 
+  AlertCircle, BarChart3,
+  Laptop, Server, Activity, ArrowRight, ExternalLink
 } from 'lucide-react';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from 'recharts';
 import Swal from 'sweetalert2';
 
 export default function DashboardPage() {
@@ -24,24 +21,12 @@ export default function DashboardPage() {
   const [roles, setRoles] = useState([]);
   const [newEmployees, setNewEmployees] = useState([]);
   const [resignedEmployees, setResignedEmployees] = useState([]);
-  const [myBalances, setMyBalances] = useState([]);
-  const [pendingLeaveApprovals, setPendingLeaveApprovals] = useState(0);
   const [turnoverData, setTurnoverData] = useState([]);
 
   // State สำหรับรายงานภาพรวมผู้บริหาร (Executive Real-Time Summary)
   const [execSummary, setExecSummary] = useState({
-    total_computers: 110,
-    asset_counts: [
-      { company: 'AIC', computer_count: 57 },
-      { company: 'AIA', computer_count: 26 },
-      { company: 'CST', computer_count: 8 },
-      { company: 'SQT', computer_count: 8 },
-      { company: 'ASPD', computer_count: 3 },
-      { company: 'AEP', computer_count: 3 },
-      { company: 'Q-AIR', computer_count: 2 },
-      { company: 'AGC', computer_count: 2 },
-      { company: 'QPM', computer_count: 1 }
-    ],
+    total_computers: 0,
+    asset_counts: [],
     helpdesk_summary: { total: 0, pending: 0, in_progress: 0, resolved: 0 },
     network_logs: [
       { location: 'ซอย 10 (Head Office)', device: 'FortiGate 70G', note: 'อัปเดตเปลี่ยน Firewall เป็นรุ่น 70G รุ่นใหม่แล้ว (ต้อง Upgrade Log Server)' },
@@ -119,25 +104,11 @@ export default function DashboardPage() {
               setExecSummary(prev => ({
                 ...prev,
                 ...execData.data,
-                asset_counts: (execData.data.asset_counts && execData.data.asset_counts.length > 0) ? execData.data.asset_counts : prev.asset_counts
+                total_computers: execData.data.total_computers || 0,
+                asset_counts: execData.data.asset_counts || []
               }));
             }
           }
-        }
-
-        // Fetch leave data
-        if (userRole === 'Admin' || userRole === 'HR' || userRole === 'Manager') {
-          const leaveApprRes = await fetch(import.meta.env.VITE_API_BASE_URL + '/api/leave/approvals', { headers: authHeaders });
-          if (leaveApprRes.ok) {
-            const leaveApprData = await leaveApprRes.json();
-            setPendingLeaveApprovals(leaveApprData.data ? leaveApprData.data.length : 0);
-          }
-        }
-
-        const balRes = await fetch(import.meta.env.VITE_API_BASE_URL + '/api/leave/my-balances', { headers: authHeaders });
-        if (balRes.ok) {
-          const balData = await balRes.json();
-          setMyBalances(balData.data || []);
         }
 
       } catch (error) {
@@ -246,7 +217,7 @@ export default function DashboardPage() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 80% 20%, #fff 0%, transparent 60%)' }} />
         <div className="relative z-10">
           <div className="text-sm font-medium text-amber-100 mb-1 tracking-wide">ยินดีต้อนรับกลับ</div>
-          <h2 className="text-2xl font-bold mb-1" style={{ letterSpacing: '-0.4px' }}>สวัสดี, {userName} 👋</h2>
+          <h2 className="text-2xl font-bold mb-1" style={{ letterSpacing: '-0.4px' }}>สวัสดี, {userName}</h2>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 14 }}>ระบบสารสนเทศและบริการกลางองค์กร (ASCG Enterprise Hub)</p>
         </div>
       </div>
@@ -359,7 +330,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 🌟 🌟 EXECUTIVE OPERATIONS SUMMARY WIDGET (รายงานภาพรวมผู้บริหาร Real-Time) 🌟 🌟 */}
+      {/* EXECUTIVE OPERATIONS SUMMARY WIDGET (รายงานภาพรวมผู้บริหาร Real-Time) */}
       <div className="bg-white dark:bg-[#262f3f] p-6 rounded-2xl border border-slate-200 dark:border-[#364356] shadow-sm space-y-6 transition-colors">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-[#364356] pb-4">
           <div className="flex items-center gap-3">
@@ -393,31 +364,40 @@ export default function DashboardPage() {
               <span>สรุปจำนวนคอมพิวเตอร์ (PC / Notebook) แยกตามบริษัทในเครือ</span>
             </h4>
             <span className="text-xs font-extrabold text-[#f89919] bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-lg border border-amber-200 dark:border-amber-900">
-              รวมทั้งหมด {execSummary.total_computers || 110} เครื่อง
+              รวมทั้งหมด {execSummary.total_computers || 0} เครื่อง
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {execSummary.asset_counts && execSummary.asset_counts.map((item, idx) => (
-              <div 
-                key={idx} 
-                onClick={() => navigate(`/admin/assets?company=${encodeURIComponent(item.company || '')}`)}
-                className="bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] p-3 rounded-xl hover:border-[#f89919] hover:bg-orange-50/20 dark:hover:bg-[#2e394b] hover:shadow-xs cursor-pointer transition-all group"
-                title={`คลิกเพื่อดูรายการทรัพย์สินของ ${item.company || 'ไม่ระบุ'}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase group-hover:text-[#f89919] transition-colors">{item.company || 'ไม่ระบุ'}</div>
-                  <span className="text-[10px] text-slate-400 group-hover:text-[#f89919] transition-colors">↗</span>
+          {execSummary.asset_counts && execSummary.asset_counts.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {execSummary.asset_counts.map((item, idx) => (
+                <div 
+                  key={idx} 
+                  onClick={() => navigate(`/admin/assets?company=${encodeURIComponent(item.company || '')}`)}
+                  className="bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] p-3 rounded-xl hover:border-[#f89919] hover:bg-orange-50/20 dark:hover:bg-[#2e394b] hover:shadow-xs cursor-pointer transition-all group"
+                  title={`คลิกเพื่อดูรายการทรัพย์สินของ ${item.company || 'ไม่ระบุ'}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase group-hover:text-[#f89919] transition-colors">{item.company || 'ไม่ระบุ'}</div>
+                    <span className="text-[10px] text-slate-400 group-hover:text-[#f89919] transition-colors">↗</span>
+                  </div>
+                  <div className="text-xl font-extrabold text-slate-900 dark:text-slate-100 mt-0.5">
+                    {item.computer_count} <span className="text-xs font-semibold text-slate-400">เครื่อง</span>
+                  </div>
+                  <div className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
+                    <CheckCircle size={10} /> ดูทรัพย์สิน {item.company} →
+                  </div>
                 </div>
-                <div className="text-xl font-extrabold text-slate-900 dark:text-slate-100 mt-0.5">
-                  {item.computer_count} <span className="text-xs font-semibold text-slate-400">เครื่อง</span>
-                </div>
-                <div className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
-                  <CheckCircle size={10} /> ดูทรัพย์สิน {item.company} →
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] rounded-xl text-center">
+              <Laptop size={32} className="mx-auto mb-2 text-slate-400 dark:text-slate-500 opacity-60" />
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                ยังไม่มีข้อมูลคอมพิวเตอร์ในระบบ (0 เครื่อง)
+              </p>
+            </div>
+          )}
         </div>
 
         {/* 2. Infrastructure & Firewall Change Notes */}

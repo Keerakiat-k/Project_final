@@ -141,7 +141,7 @@ export default function AssetAdminPage() {
   }, []);
 
   // -------------------------------------------------------------
-  // 🌐 API Fetchers
+  // API Fetchers
   // -------------------------------------------------------------
   const fetchCompanies = async () => {
     try {
@@ -222,7 +222,7 @@ export default function AssetAdminPage() {
   };
 
   // -------------------------------------------------------------
-  // ⚡ Smart Handlers for Forms
+  // Smart Handlers for Forms
   // -------------------------------------------------------------
   const handleOpenAddModal = () => {
     setIsEditMode(false);
@@ -659,7 +659,7 @@ export default function AssetAdminPage() {
   const handleRetireAsset = async (asset) => {
     const confirm = await Swal.fire({
       title: `ยืนยันปลดระวาง [${asset.asset_code}]?`,
-      text: `ทรัพย์สิน "${asset.name}" จะถูกปรับสถานะเป็น '⚪️ ปลดระวาง (Retired)' และนำออกจากผู้ถือครอง`,
+      text: `ทรัพย์สิน "${asset.name}" จะถูกปรับสถานะเป็น 'ปลดระวาง (Retired)' และนำออกจากผู้ถือครอง`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'ยืนยันปลดระวาง',
@@ -843,7 +843,7 @@ export default function AssetAdminPage() {
   };
 
   // -------------------------------------------------------------
-  // 🔍 Filter & Pagination Computation
+  // Filter & Pagination Computation
   // -------------------------------------------------------------
   const filteredAssets = assets.filter(item => {
     // Search
@@ -910,15 +910,15 @@ export default function AssetAdminPage() {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Available':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800/60">🟢 พร้อมใช้งาน</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800/60">พร้อมใช้งาน</span>;
       case 'In Use':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800/60">🔵 กำลังใช้งาน</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800/60">กำลังใช้งาน</span>;
       case 'On Loan':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/50 dark:text-purple-300 dark:border-purple-800/60">🟣 ยืมใช้งานชั่วคราว</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/50 dark:text-purple-300 dark:border-purple-800/60">ยืมใช้งานชั่วคราว</span>;
       case 'Maintenance':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60">🟡 ส่งซ่อม/อัปเกรด</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60">ส่งซ่อม/อัปเกรด</span>;
       case 'Retired':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">⚪️ ปลดระวาง</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">ปลดระวาง</span>;
       default:
         return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:border dark:border-slate-700">{status}</span>;
     }
@@ -1081,7 +1081,7 @@ export default function AssetAdminPage() {
               onChange={(e) => { setSelectedCompany(e.target.value); setCurrentPage(1); }}
               className="input-base text-xs py-2 bg-white dark:bg-[#1c232f] dark:text-slate-100 dark:border-[#364356]"
             >
-              <option value="All" className="dark:bg-[#1c232f]">🏢 ทุกบริษัท ({masterCompanies.length || filterOptions.companies.length})</option>
+              <option value="All" className="dark:bg-[#1c232f]">ทุกบริษัท ({masterCompanies.length || filterOptions.companies.length})</option>
               {masterCompanies.length > 0 ? (
                 masterCompanies.map(c => (
                   <option key={c.prefix} value={c.prefix} className="dark:bg-[#1c232f]">{c.prefix}</option>
@@ -1101,7 +1101,7 @@ export default function AssetAdminPage() {
               onChange={(e) => { setSelectedDept(e.target.value); setCurrentPage(1); }}
               className="input-base text-xs py-2 bg-white dark:bg-[#1c232f] dark:text-slate-100 dark:border-[#364356]"
             >
-              <option value="All" className="dark:bg-[#1c232f]">🏷️ ทุกแผนก ({filterOptions.departments.length})</option>
+              <option value="All" className="dark:bg-[#1c232f]">ทุกแผนก ({filterOptions.departments.length})</option>
               {filterOptions.departments.map(d => (
                 <option key={d} value={d} className="dark:bg-[#1c232f]">{d}</option>
               ))}
@@ -1115,7 +1115,7 @@ export default function AssetAdminPage() {
               onChange={(e) => { setSelectedLocation(e.target.value); setCurrentPage(1); }}
               className="input-base text-xs py-2 bg-white dark:bg-[#1c232f] dark:text-slate-100 dark:border-[#364356]"
             >
-              <option value="All" className="dark:bg-[#1c232f]">📍 ทุกสาขา ({filterOptions.locations.length})</option>
+              <option value="All" className="dark:bg-[#1c232f]">ทุกสาขา ({filterOptions.locations.length})</option>
               {filterOptions.locations.map(l => (
                 <option key={l} value={l} className="dark:bg-[#1c232f]">{l}</option>
               ))}
@@ -1129,12 +1129,12 @@ export default function AssetAdminPage() {
               onChange={(e) => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
               className="input-base text-xs py-2 bg-white dark:bg-[#1c232f] dark:text-slate-100 dark:border-[#364356]"
             >
-              <option value="All" className="dark:bg-[#1c232f]">⚡ ทุกสถานะ</option>
-              <option value="Available" className="dark:bg-[#1c232f]">🟢 พร้อมใช้งาน (Available)</option>
-              <option value="In Use" className="dark:bg-[#1c232f]">🔵 กำลังใช้งาน (In Use)</option>
-              <option value="On Loan" className="dark:bg-[#1c232f]">🟣 ยืมใช้งาน (On Loan)</option>
-              <option value="Maintenance" className="dark:bg-[#1c232f]">🟡 ส่งซ่อม (Maintenance)</option>
-              <option value="Retired" className="dark:bg-[#1c232f]">⚪️ ปลดระวาง (Retired)</option>
+              <option value="All" className="dark:bg-[#1c232f]">ทุกสถานะ</option>
+              <option value="Available" className="dark:bg-[#1c232f]">พร้อมใช้งาน (Available)</option>
+              <option value="In Use" className="dark:bg-[#1c232f]">กำลังใช้งาน (In Use)</option>
+              <option value="On Loan" className="dark:bg-[#1c232f]">ยืมใช้งาน (On Loan)</option>
+              <option value="Maintenance" className="dark:bg-[#1c232f]">ส่งซ่อม (Maintenance)</option>
+              <option value="Retired" className="dark:bg-[#1c232f]">ปลดระวาง (Retired)</option>
             </select>
           </div>
 
@@ -1772,11 +1772,11 @@ export default function AssetAdminPage() {
                       className="input-base text-xs py-2 bg-white font-semibold"
                       required
                     >
-                      <option value="Available">🟢 พร้อมใช้งาน (ในคลัง)</option>
-                      <option value="In Use">🔵 กำลังใช้งาน (มีผู้ถือครอง)</option>
-                      <option value="On Loan">🟣 ยืมใช้งานชั่วคราว</option>
-                      <option value="Maintenance">🟡 ส่งซ่อม / อัปเกรด</option>
-                      <option value="Retired">⚪️ ปลดระวาง (Retired)</option>
+                      <option value="Available">พร้อมใช้งาน (ในคลัง)</option>
+                      <option value="In Use">กำลังใช้งาน (มีผู้ถือครอง)</option>
+                      <option value="On Loan">ยืมใช้งานชั่วคราว</option>
+                      <option value="Maintenance">ส่งซ่อม / อัปเกรด</option>
+                      <option value="Retired">ปลดระวาง (Retired)</option>
                     </select>
                   </div>
 
@@ -1804,7 +1804,7 @@ export default function AssetAdminPage() {
                       value={employeeOptions.find(opt => String(opt.value) === String(formData.assigned_to)) || null}
                       onChange={handleSelectEmployee}
                       options={employeeOptions}
-                      placeholder="🔍 พิมพ์เพื่อค้นหาชื่อพนักงาน..."
+                      placeholder="พิมพ์เพื่อค้นหาชื่อพนักงาน..."
                       isClearable
                       isSearchable
                       styles={selectCustomStyles}
@@ -2331,7 +2331,7 @@ export default function AssetAdminPage() {
                       value={transferEmployeeOptions.find(opt => String(opt.value) === String(transferData.to_user_id)) || null}
                       onChange={(opt) => setTransferData(prev => ({ ...prev, to_user_id: opt ? opt.value : '' }))}
                       options={transferEmployeeOptions}
-                      placeholder="🔍 พิมพ์เพื่อค้นหาผู้รับมอบ..."
+                      placeholder="พิมพ์เพื่อค้นหาผู้รับมอบ..."
                       isClearable
                       isSearchable
                       styles={selectCustomStyles}
@@ -2345,7 +2345,7 @@ export default function AssetAdminPage() {
                 {transferData.transfer_type === 'Loan' && (
                   <div className="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200 dark:border-purple-900/60">
                     <label className="block text-[11px] font-bold text-purple-900 dark:text-purple-300 mb-1">
-                      📅 กำหนดวันที่ต้องส่งคืน (Return Due Date) *
+                      กำหนดวันที่ต้องส่งคืน (Return Due Date) *
                     </label>
                     <input
                       type="date"
@@ -2616,7 +2616,7 @@ export default function AssetAdminPage() {
                             <div className="absolute -left-[23px] top-3.5 w-3 h-3 rounded-full bg-purple-500 border-2 border-white shadow-xs" />
                             <div className="flex items-center justify-between font-semibold text-slate-800 dark:text-slate-100">
                               <span className="text-purple-700 font-bold">
-                                {log.transfer_type === 'Loan' ? '🟣 ยืมใช้งานชั่วคราว' : '📦 โอนย้ายข้ามสาขา/บริษัท'}
+                                {log.transfer_type === 'Loan' ? 'ยืมใช้งานชั่วคราว' : 'โอนย้ายข้ามสาขา/บริษัท'}
                               </span>
                               <span className="text-[11px] text-slate-400 font-normal">
                                 {new Date(log.created_at).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -2624,12 +2624,12 @@ export default function AssetAdminPage() {
                             </div>
                             <div className="mt-1 text-slate-600 dark:text-slate-300">
                               จาก <strong>{log.from_company} ({log.from_department || '-'})</strong> [{log.from_user || 'คลัง'}] 
-                              {' ➡️ '} 
+                              {' → '} 
                               ถึง <strong>{log.to_company} ({log.to_department || '-'})</strong> [{log.to_user || 'คลัง'}]
                             </div>
                             {log.return_due_date && (
                               <div className="mt-1 text-purple-700 text-[11px] font-medium">
-                                📅 กำหนดส่งคืน: {new Date(log.return_due_date).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                กำหนดส่งคืน: {new Date(log.return_due_date).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
                               </div>
                             )}
                             {log.reason && (
@@ -2829,9 +2829,9 @@ export default function AssetAdminPage() {
                   onChange={(e) => setMaintenanceData(prev => ({ ...prev, set_status: e.target.value }))}
                   className="input-base text-xs py-2 bg-white"
                 >
-                  <option value="Maintenance">🟡 ส่งซ่อมบำรุง (Maintenance)</option>
-                  <option value="Available">🟢 ซ่อมเสร็จแล้ว ส่งกลับเข้าคลัง (Available)</option>
-                  <option value="In Use">🔵 ซ่อมเสร็จแล้ว ส่งคืนผู้ใช้เดิม (In Use)</option>
+                  <option value="Maintenance">ส่งซ่อมบำรุง (Maintenance)</option>
+                  <option value="Available">ซ่อมเสร็จแล้ว ส่งกลับเข้าคลัง (Available)</option>
+                  <option value="In Use">ซ่อมเสร็จแล้ว ส่งคืนผู้ใช้เดิม (In Use)</option>
                 </select>
               </div>
 

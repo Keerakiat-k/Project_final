@@ -15,7 +15,7 @@ export default function ITSupportAdminPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  // 🔄 Sorting State
+  // Sorting State
   const [sortField, setSortField] = useState('date'); // 'date' | 'ticket_no' | 'name' | 'status'
   const [sortOrder, setSortOrder] = useState('desc'); // 'desc' | 'asc'
 
@@ -185,7 +185,7 @@ export default function ITSupportAdminPage() {
     return 0;
   });
 
-  // 🌟 1. ฟังก์ชันออกรายงาน PDF (ใช้ Isolated Print Frame ป้องกันปัญหา Layout ซ้อนทับ 100%) 🌟
+  // 1. ฟังก์ชันออกรายงาน PDF (ใช้ Isolated Print Frame ป้องกันปัญหา Layout ซ้อนทับ 100%)
   const handleExportPDF = () => {
     if (filteredTickets.length === 0) {
       Swal.fire('แจ้งเตือน', 'ไม่พบข้อมูลรายการแจ้งซ่อมสำหรับพิมพ์รายงาน', 'warning');
@@ -320,7 +320,7 @@ export default function ITSupportAdminPage() {
 </head>
 <body>
   <div class="header">
-    <h1>🏢 ASCG GLOBAL GROUP</h1>
+    <h1>ASCG GLOBAL GROUP</h1>
     <h2>รายงานสรุปการแจ้งซ่อมและปัญหา IT (Executive IT Helpdesk Report)</h2>
     <p>ข้อมูลตั้งแต่วันที่: ${startDate ? new Date(startDate).toLocaleDateString('th-TH') : 'ทั้งหมด'} ถึง: ${endDate ? new Date(endDate).toLocaleDateString('th-TH') : 'ปัจจุบัน'} | พิมพ์เมื่อ: ${new Date().toLocaleString('th-TH')}</p>
   </div>
@@ -344,7 +344,7 @@ export default function ITSupportAdminPage() {
     </div>
   </div>
 
-  <div style="font-size: 12px; font-weight: bold; margin: 0 0 6px 0; color: #0f172a;">📋 รายการแจ้งปัญหา IT (${filteredTickets.length} รายการ)</div>
+  <div style="font-size: 12px; font-weight: bold; margin: 0 0 6px 0; color: #0f172a;">รายการแจ้งปัญหา IT (${filteredTickets.length} รายการ)</div>
   <table class="data-table">
     <thead>
       <tr>
@@ -414,7 +414,7 @@ export default function ITSupportAdminPage() {
     }, 400);
   };
 
-// 🌟 2. ฟังก์ชันดาวน์โหลด Excel (พร้อมเส้นตารางและจัดฟอร์แมตสวยงาม) 🌟
+  // 2. ฟังก์ชันดาวน์โหลด Excel (พร้อมเส้นตารางและจัดฟอร์แมตสวยงาม)
   const handleExportExcel = async () => {
     if (!startDate || !endDate) {
       Swal.fire('แจ้งเตือน', 'กรุณาเลือก "จากวันที่" และ "ถึงวันที่" ให้ครบถ้วนก่อนดาวน์โหลด', 'warning');
@@ -459,7 +459,7 @@ export default function ITSupportAdminPage() {
       });
     });
 
-    // 4. 🌟 จัดรูปแบบ (ใส่เส้นตาราง, ทำตัวหนา, จัดกึ่งกลาง) 🌟
+    // 4. จัดรูปแบบ (ใส่เส้นตาราง, ทำตัวหนา, จัดกึ่งกลาง)
     // แต่งหัวตาราง (แถวที่ 1)
     const headerRow = worksheet.getRow(1);
     headerRow.font = { bold: true, size: 12 };
@@ -512,7 +512,7 @@ export default function ITSupportAdminPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-[#1e2430] font-sans print:min-h-0 print:bg-white print:p-0 print:m-0 print:w-full">
       
       {/* ========================================== */}
-      {/* 🌟 ส่วนหน้าจอปกติ (ซ่อนตอนปริ้น PDF) 🌟 */}
+      {/* ส่วนหน้าจอปกติ (ซ่อนตอนปริ้น PDF) */}
       {/* ========================================== */}
       <div className="print-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
         
@@ -561,7 +561,7 @@ export default function ITSupportAdminPage() {
                 />
               </div>
               
-              {/* 🌟 ปุ่ม Export Excel & PDF 🌟 */}
+              {/* ปุ่ม Export Excel & PDF */}
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button 
                   onClick={handleExportExcel}
@@ -585,7 +585,7 @@ export default function ITSupportAdminPage() {
           {/* ตารางข้อมูล & Mobile Card View */}
           <div className="bg-white dark:bg-[#262f3f] rounded-2xl border border-[#dfe0df] dark:border-[#364356] shadow-sm overflow-hidden">
             
-            {/* 💻 Desktop Table (md:block) */}
+            {/* Desktop Table (md:block) */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -693,7 +693,7 @@ export default function ITSupportAdminPage() {
               </table>
             </div>
 
-            {/* 📱 Mobile Card View (md:hidden) */}
+            {/* Mobile Card View (md:hidden) */}
             <div className="block md:hidden divide-y divide-slate-100 dark:divide-[#364356]">
               {isLoading ? (
                 <MobileCardSkeleton count={4} />
@@ -751,7 +751,7 @@ export default function ITSupportAdminPage() {
       </div>
 
       {/* ========================================== */}
-      {/* 🌟 MODAL ป๊อปอัป (ซ่อนตอนปริ้นเช่นกัน) 🌟 */}
+      {/* MODAL ป๊อปอัป (ซ่อนตอนปริ้นเช่นกัน) */}
       {/* ========================================== */}
       {selectedTicket && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 print:hidden">

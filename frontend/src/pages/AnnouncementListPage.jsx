@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Megaphone, Plus, Edit, Trash2, Search, Mail, X } from 'lucide-react';
+import { Megaphone, Plus, Edit, Trash2, Search, Mail, X, AlertTriangle } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { TableSkeleton, MobileCardSkeleton } from '../components/common/Skeleton';
 
@@ -242,7 +242,7 @@ export default function AnnouncementListPage() {
       {/* Table & Mobile Cards */}
       <div className="bg-white dark:bg-[#262f3f] border border-[#e9ebee] dark:border-[#364356] rounded-2xl shadow-xs overflow-hidden transition-colors">
         
-        {/* 💻 Desktop Table (hidden on < md) */}
+        {/* Desktop Table (hidden on < md) */}
         <div className="hidden md:block overflow-x-auto">
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
@@ -318,7 +318,7 @@ export default function AnnouncementListPage() {
           </table>
         </div>
 
-        {/* 📱 Mobile Card View (block on < md) */}
+        {/* Mobile Card View (block on < md) */}
         <div className="block md:hidden divide-y divide-slate-100">
           {isLoading ? (
             <MobileCardSkeleton count={3} />
@@ -525,8 +525,8 @@ export default function AnnouncementListPage() {
                 </div>
               </div>
 
-              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex gap-2.5 text-xs text-amber-800">
-                <span className="shrink-0">⚠️</span>
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2.5 text-xs text-amber-800">
+                <AlertTriangle size={15} className="shrink-0 text-amber-600 mt-0.5" />
                 <span>ระบบจะดึงการตั้งค่าผู้รับ (To, CC, BCC) จากหน้าตั้งค่าระบบองค์กรของ "{senderType}" มารวมกับอีเมลที่คุณเลือกด้านบน</span>
               </div>
             </div>

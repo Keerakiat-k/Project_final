@@ -21,7 +21,7 @@ export default function AnnouncementPage() {
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([]);
   
-  // 🧭 View Mode: 'news' (ข่าวสารและกิจกรรม) | 'policies' (นโยบายองค์กร)
+  // View Mode: 'news' (ข่าวสารและกิจกรรม) | 'policies' (นโยบายองค์กร)
   const [viewMode, setViewMode] = useState('news');
   const [filter, setFilter] = useState('ทั้งหมด');
   const [announcementTypes, setAnnouncementTypes] = useState([]);
@@ -140,7 +140,7 @@ export default function AnnouncementPage() {
             </div>
           </div>
 
-          {/* 💻 Desktop Center Navigation Mode Switcher (hidden on < md) */}
+          {/* Desktop Center Navigation Mode Switcher (hidden on < md) */}
           <div className="hidden md:flex items-center bg-slate-100/90 dark:bg-[#1c232f] p-1 rounded-xl border border-slate-200 dark:border-[#364356] shadow-inner">
             <button
               onClick={() => handleSwitchMode('news')}
@@ -198,7 +198,7 @@ export default function AnnouncementPage() {
 
         </div>
 
-        {/* 📱 Mobile Sub-Navbar Mode Switcher (< md) */}
+        {/* Mobile Sub-Navbar Mode Switcher (< md) */}
         <div className="md:hidden bg-slate-50/95 border-t border-slate-200/70 px-3 py-2 flex items-center justify-center">
           <div className="flex items-center bg-slate-200/70 p-1 rounded-xl border border-slate-300/60 w-full">
             <button

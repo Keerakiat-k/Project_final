@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Download,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  X
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -367,10 +368,10 @@ const TimeAttendanceAdminPage = () => {
               </span>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              IP: {deviceStatus?.ip || '192.168.99.7'}:{deviceStatus?.port || 4370}
+              IP: {deviceStatus?.ip || '192.168.x.x'}:{deviceStatus?.port || 4370}
             </p>
             <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-              {deviceStatus?.online ? '🟢 เชื่อมต่อพร้อมใช้งาน' : '🔴 ขาดการเชื่อมต่อ'}
+              {deviceStatus?.online ? 'เชื่อมต่อพร้อมใช้งาน' : 'ขาดการเชื่อมต่อ'}
             </span>
           </div>
         </div>
@@ -590,7 +591,7 @@ const TimeAttendanceAdminPage = () => {
                           ? 'bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40'
                           : 'bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40'
                       }`}>
-                        {item.punch_type === 'CheckIn' ? '🟢 เข้างาน' : item.punch_type === 'CheckOut' ? '🔵 ออกงาน' : '🟡 พักเที่ยง'}
+                        {item.punch_type === 'CheckIn' ? 'เข้างาน' : item.punch_type === 'CheckOut' ? 'ออกงาน' : 'พักเที่ยง'}
                       </span>
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400 text-[11px]">
@@ -657,8 +658,9 @@ const TimeAttendanceAdminPage = () => {
               <button 
                 onClick={() => setShowUsersModal(false)}
                 className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+                aria-label="Close modal"
               >
-                ✕
+                <X size={16} />
               </button>
             </div>
 

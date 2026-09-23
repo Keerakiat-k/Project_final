@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AddEmployeePage from './pages/AddEmployeePage';
@@ -19,11 +19,7 @@ import HostingAdminPage from './pages/HostingAdminPage';
 import AssetAdminPage from './pages/AssetAdminPage';
 import NetworkAdminPage from './pages/NetworkAdminPage';
 import ForbiddenPage from './pages/ForbiddenPage';
-import LeaveRequestPage from './pages/LeaveRequestPage';
-import LeaveManagementPage from './pages/LeaveManagementPage';
-import LeaveSettingsPage from './pages/LeaveSettingsPage';
 import ProfilePage from './pages/ProfilePage';
-import LeaveHistoryPage from './pages/LeaveHistoryPage';
 import TimeAttendanceAdminPage from './pages/TimeAttendanceAdminPage';
 import SystemAccountsAdminPage from './pages/SystemAccountsAdminPage';
 import GlobalTooltip from './components/common/GlobalTooltip';
@@ -35,48 +31,43 @@ export default function App() {
       <Router>
         <GlobalTooltip />
       <Routes>
-        {/* หน้าแรก (ข่าวสาร) */}
+        {/* เส้นทางสาธารณะ (Public Routes) */}
         <Route path="/" element={<AnnouncementPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/403" element={<ForbiddenPage />} />
-        {/* แจ้งปัญหา IT แบบไม่ต้องล็อคอิน (จากหน้าประกาศ) */}
+        {/* บริการแจ้งปัญหา IT สาธารณะ (ไม่ต้องเข้าสู่ระบบ) */}
         <Route path="/report-it" element={<ITSupportPage />} />
 
-        {/* 🌟 Layout สำหรับหน้าที่ต้อง Login (มี Sidebar & Navbar) 🌟 */}
+        {/* Layout หลักสำหรับผู้ใช้ที่เข้าสู่ระบบ (Protected Admin Layout) */}
         <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           
-          {/* ทุกคนที่ล็อกอินเข้าได้ */}
+          {/* เมนูทั่วไป (เข้าถึงได้สำหรับผู้ใช้ทุกคนที่ยืนยันตัวตน) */}
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/it-support" element={<ITSupportPage />} />
-          {/* จัดการพนักงาน */}
+
+          {/* การจัดการข้อมูลพนักงานและการลงเวลา (HR & Employee Management) */}
           <Route path="/employee-list" element={<ProtectedRoute requiredPermission="manage_employees"><EmployeeListPage /></ProtectedRoute>} />
           <Route path="/employees/new" element={<ProtectedRoute requiredPermission="manage_employees"><AddEmployeePage /></ProtectedRoute>} />
           <Route path="/edit-employee/:id" element={<ProtectedRoute requiredPermission="manage_employees"><EditEmployeePage /></ProtectedRoute>} />
           <Route path="/admin/time-attendance" element={<ProtectedRoute requiredPermission="manage_employees"><TimeAttendanceAdminPage /></ProtectedRoute>} />
           
-          {/* จัดการประกาศ */}
+          {/* การจัดการข่าวสารและประกาศ (Announcement Management) */}
           <Route path="/admin/announcements" element={<ProtectedRoute requiredPermission="manage_announcements"><AnnouncementListPage /></ProtectedRoute>} />
           <Route path="/admin/announcements/new" element={<ProtectedRoute requiredPermission="manage_announcements"><AddAnnouncementPage /></ProtectedRoute>} />
           <Route path="/admin/announcements/edit/:id" element={<ProtectedRoute requiredPermission="manage_announcements"><EditAnnouncementPage /></ProtectedRoute>} />
 
-          {/* ฝั่ง IT */}
+          {/* งานบริหารจัดการระบบไอทีและโครงสร้างพื้นฐาน (IT Support & Infrastructure) */}
           <Route path="/admin/it-health-check" element={<ProtectedRoute requiredPermission="manage_it_support"><ITHealthCheckPage /></ProtectedRoute>} />
           <Route path="/admin/it-support" element={<ProtectedRoute requiredPermission="manage_it_support"><ITSupportAdminPage /></ProtectedRoute>} />
           <Route path="/admin/network" element={<ProtectedRoute requiredPermission="manage_it_support"><NetworkAdminPage /></ProtectedRoute>} />
           <Route path="/admin/hostings" element={<ProtectedRoute requiredPermission="manage_assets"><HostingAdminPage /></ProtectedRoute>} />
           <Route path="/admin/assets" element={<ProtectedRoute requiredPermission="manage_assets"><AssetAdminPage /></ProtectedRoute>} />
 
-          {/* Settings */}
+          {/* การตั้งค่าระบบและบัญชีผู้ใช้งาน (System Settings & Accounts) */}
           <Route path="/admin/system-accounts" element={<ProtectedRoute requiredPermission="manage_settings"><SystemAccountsAdminPage /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute requiredPermission="manage_settings"><SystemSettingsPage /></ProtectedRoute>} />
           <Route path="/settings/email-templates" element={<ProtectedRoute requiredPermission="manage_settings"><EmailTemplatesPage /></ProtectedRoute>} />
-          
-          {/* Redirect disabled leave routes to dashboard */}
-          <Route path="/leave" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/leave/*" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/settings/leave" element={<Navigate to="/dashboard" replace />} />
-          
         </Route>
       </Routes>
     </Router>

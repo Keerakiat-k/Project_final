@@ -4,7 +4,7 @@ import {
   Activity, ShieldAlert, CheckCircle2, AlertTriangle, XCircle, 
   Calendar, RefreshCw, Plus, Edit3, Server, Wifi, Video, Clock, 
   Building2, UserCheck, Search, Filter, FileText, Download,
-  BarChart3, Laptop, HelpCircle, Layers, ArrowUpRight
+  BarChart3, Laptop, HelpCircle, Layers, ArrowUpRight, X
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import ExcelJS from 'exceljs';
@@ -37,18 +37,8 @@ export default function ITHealthCheckPage() {
   // Executive Real-Time Summary State
   const [execLoading, setExecLoading] = useState(false);
   const [execData, setExecData] = useState({
-    total_computers: 110,
-    asset_counts: [
-      { company: 'AIC', computer_count: 57 },
-      { company: 'AIA', computer_count: 26 },
-      { company: 'CST', computer_count: 8 },
-      { company: 'SQT', computer_count: 8 },
-      { company: 'ASPD', computer_count: 3 },
-      { company: 'AEP', computer_count: 3 },
-      { company: 'Q-AIR', computer_count: 2 },
-      { company: 'AGC', computer_count: 2 },
-      { company: 'QPM', computer_count: 1 }
-    ],
+    total_computers: 0,
+    asset_counts: [],
     helpdesk_summary: { total: 0, pending: 0, in_progress: 0, resolved: 0 },
     branch_stats: [],
     network_logs: [
@@ -410,7 +400,7 @@ export default function ITHealthCheckPage() {
               }`}
             >
               <Calendar size={15} />
-              <span>📅 ตรวจเช็ครายวัน (Daily Check)</span>
+              <span>ตรวจเช็ครายวัน (Daily Check)</span>
             </button>
 
             <button
@@ -422,7 +412,7 @@ export default function ITHealthCheckPage() {
               }`}
             >
               <BarChart3 size={15} />
-              <span>📊 รายงานภาพรวม (Operations Summary)</span>
+              <span>รายงานภาพรวม (Operations Summary)</span>
             </button>
           </div>
 
@@ -742,27 +732,36 @@ export default function ITHealthCheckPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-              {execData.asset_counts && execData.asset_counts.map((item, idx) => (
-                <div 
-                  key={idx} 
-                  onClick={() => navigate(`/admin/assets?company=${encodeURIComponent(item.company || '')}`)}
-                  className="bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] p-3.5 rounded-xl hover:border-[#f89919] hover:bg-orange-50/20 dark:hover:bg-amber-950/30 hover:shadow-xs cursor-pointer transition-all group"
-                  title={`คลิกเพื่อดูรายการทรัพย์สินของ ${item.company || 'ไม่ระบุ'}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase group-hover:text-[#f89919] transition-colors">{item.company || 'ไม่ระบุ'}</div>
-                    <span className="text-[10px] text-slate-400 group-hover:text-[#f89919] transition-colors">↗</span>
+            {execData.asset_counts && execData.asset_counts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {execData.asset_counts.map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    onClick={() => navigate(`/admin/assets?company=${encodeURIComponent(item.company || '')}`)}
+                    className="bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] p-3.5 rounded-xl hover:border-[#f89919] hover:bg-orange-50/20 dark:hover:bg-amber-950/30 hover:shadow-xs cursor-pointer transition-all group"
+                    title={`คลิกเพื่อดูรายการทรัพย์สินของ ${item.company || 'ไม่ระบุ'}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase group-hover:text-[#f89919] transition-colors">{item.company || 'ไม่ระบุ'}</div>
+                      <span className="text-[10px] text-slate-400 group-hover:text-[#f89919] transition-colors">↗</span>
+                    </div>
+                    <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">
+                      {item.computer_count} <span className="text-xs font-semibold text-slate-400">เครื่อง</span>
+                    </div>
+                    <div className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
+                      <CheckCircle2 size={10} /> ดูทรัพย์สิน {item.company} →
+                    </div>
                   </div>
-                  <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">
-                    {item.computer_count} <span className="text-xs font-semibold text-slate-400">เครื่อง</span>
-                  </div>
-                  <div className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
-                    <CheckCircle2 size={10} /> ดูทรัพย์สิน {item.company} →
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 bg-slate-50 dark:bg-[#1c232f] border border-slate-200 dark:border-[#364356] rounded-xl text-center">
+                <Laptop size={32} className="mx-auto mb-2 text-slate-400 dark:text-slate-500 opacity-60" />
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  ยังไม่มีข้อมูลคอมพิวเตอร์ในระบบ (0 เครื่อง)
+                </p>
+              </div>
+            )}
           </div>
 
           {/* 2. สรุปทิกเก็ตแจ้งซ่อม IT (Helpdesk) & สถานะ Network / Firewall */}
@@ -830,7 +829,7 @@ export default function ITHealthCheckPage() {
                 onClick={() => setIsModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c232f] transition-colors cursor-pointer"
               >
-                ✕
+                <X size={20} />
               </button>
             </div>
 
@@ -945,7 +944,7 @@ export default function ITHealthCheckPage() {
                         onClick={() => handleRemoveModalItem(idx)}
                         className="text-slate-400 hover:text-rose-500 p-1"
                       >
-                        ✕
+                        <X size={16} />
                       </button>
                     </div>
                   ))}
